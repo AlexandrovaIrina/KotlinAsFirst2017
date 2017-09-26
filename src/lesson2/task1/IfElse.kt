@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson2.task1
 
 import lesson1.task1.discriminant
@@ -35,9 +36,9 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String {
-    return if (age/10==1||age/10==11||age%10 in 5..9||age%10==0) age.toString()+" лет"
-           else if(age%10==1) age.toString()+" год"
-           else age.toString()+" года"
+    return if (age / 10 == 1 || age / 10 == 11 || age % 10 in 5..9 || age % 10 == 0) age.toString() + " лет"
+    else if (age % 10 == 1) age.toString() + " год"
+    else age.toString() + " года"
 }
 
 /**
@@ -75,9 +76,13 @@ fun timeForHalfWay(t1: Double, v1: Double,
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int {
-    return if ((kingX == rookX1 || kingY == rookY1) && kingX != rookX2 && kingY != rookY2) 1
-    else if ((kingX == rookX2 || kingY == rookY2) && kingX != rookX1 && kingY != rookY1) 2
-    else if ((kingX == rookX2 || kingY == rookY2) && (kingX == rookX1 || kingY == rookY1)) 3
+    val sameX1 = kingX == rookX1
+    val sameY1 = kingY == rookY1
+    val sameX2 = kingX == rookX2
+    val sameY2 = kingY == rookY2
+    return if ((sameX1 || sameY1) && !sameX2 && !sameY2) 1
+    else if ((sameX2 || sameY2) && !sameX1 && !sameY1) 2
+    else if ((sameX2 || sameY2) && (sameX1 || sameY1)) 3
     else 0
 }
 
@@ -93,12 +98,17 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int = when {
-    abs(kingX - bishopX) == abs(kingY - bishopY) && (kingX == rookX || kingY == rookY) -> 3
-    abs(kingX - bishopX) != abs(kingY - bishopY) && (kingX == rookX || kingY == rookY) -> 1
-    abs(kingX - bishopX) == abs(kingY - bishopY) && (kingX != rookX && kingY != rookY) -> 2
-    else -> 0
+                          bishopX: Int, bishopY: Int): Int {
+    val sameDiagonalBishop = abs(kingX - bishopX) == abs(kingY - bishopY)
+    val sameLineRook = kingX == rookX || kingY == rookY
+    return when {
+        sameDiagonalBishop && sameLineRook -> 3
+        !sameDiagonalBishop && sameLineRook -> 1
+        sameDiagonalBishop && !sameLineRook -> 2
+        else -> 0
+    }
 }
+
 
 /**
  * Простая
@@ -109,28 +119,24 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if (a >= b + c || b >= c + a || c >= b + a) return -1
-    if (a > b && a > c) {
-        val cosAlpha = (b * b + c * c - a * a) / (2 * b * c)
-        return when {
-            cosAlpha > 0 -> 0
-            cosAlpha == 0.0 -> 1
-            else -> 2
-        }
-    } else if (b > a && b > c) {
-        val cosAlpha = (a * a + c * c - b * b) / (2 * a * c)
-        return when {
-            cosAlpha > 0 -> 0
-            cosAlpha == 0.0 -> 1
-            else -> 2
-        }
-    } else {
-        val cosAlpha = (b * b + a * a - c * c) / (2 * b * a)
-        return when {
-            cosAlpha > 0 -> 0
-            cosAlpha == 0.0 -> 1
-            else -> 2
-        }
+    var biggestSide = a
+    var side2 = b
+    var side3 = c
+    if (side2 > biggestSide && side2 > side3) {
+        var l = biggestSide
+        biggestSide = side2
+        side2 = l
+    } else if (side3 > biggestSide && side3 > side2) {
+        var l = biggestSide
+        biggestSide = side3
+        side3 = l
+    }
+    if (biggestSide >= side2 + side3) return -1
+    val cosAlpha = (side2 * side2 + side3 * side3 - biggestSide * biggestSide )/ (2 * side2 * side3)
+    return when {
+        cosAlpha > 0 -> 0
+        cosAlpha == 0.0 -> 1
+        else -> 2
     }
 }
 
