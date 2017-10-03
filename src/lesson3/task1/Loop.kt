@@ -172,7 +172,7 @@ fun sin(x: Double, eps: Double): Double {
     var factorial = 6.0
     var term = ans
     var i = 1
-    while (abs(term) >= eps) {
+    while (abs(term) > eps) {
         term = pow(const, power) / factorial
         if (i % 2 == 1) ans -= term
         else ans += term
@@ -309,20 +309,26 @@ fun squareSequenceDigit(n: Int): Int {
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var number = 3
-    var i = 2
-    var fib = 1
+    var lastFib2 = 1
+    var i = 3
+    var fib = 2
+    var lastFib1 = 1
     while (n > i) {
         var sizeOfNumber = 1
-        fib = fib(number)
+        val l = fib
+        fib = lastFib1 + lastFib2
+        lastFib1 = lastFib2
+        lastFib2 = l
         while (fib / 10 > 0) {
             sizeOfNumber++
             fib /= 10
         }
-        fib = fib(number)
+        fib = lastFib1 + lastFib2
         if (i + sizeOfNumber < n) {
             i += sizeOfNumber
-            number++
+            fib = lastFib1 + lastFib2
+            lastFib1 = lastFib2
+            lastFib2 = l
         } else {
             while (i < n) {
                 i++
@@ -332,5 +338,5 @@ fun fibSequenceDigit(n: Int): Int {
             return fib / pow(10.0, sizeOfNumber.toDouble()).toInt()
         }
     }
-    return fib
+    return 1
 }
