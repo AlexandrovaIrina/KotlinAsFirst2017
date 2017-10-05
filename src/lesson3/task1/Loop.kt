@@ -79,9 +79,18 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    if (n == 1) return 1
-    if (n == 2) return 1
-    return fib(n - 1) + fib(n - 2)
+    if (n == 1 || n == 2) return 1
+    var lastNumber1 = 1
+    var lastNumber2 = 1
+    var ans = lastNumber1 + lastNumber2
+    var i = 4
+    while(i <= n){
+        lastNumber1 = lastNumber2
+        lastNumber2 = ans
+        ans = lastNumber1 + lastNumber2
+        i++
+    }
+    return ans
 }
 
 /**
@@ -146,15 +155,15 @@ fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var f = false
+    var ans = false
     val l = sqrt(m * 1.0)
     val r = sqrt(n * 1.0)
     var k = l.toInt()
-    while(!f && k in l.toInt()..r.toInt()){
-        f = k * k in m..n
+    while(!ans && k in l.toInt()..r.toInt()){
+        ans = k * k in m..n
         k++
     }
-    return f
+    return ans
 }
 
 /**
@@ -166,18 +175,17 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var ans = x
-    while (abs(ans) > 2 * PI) ans -= 2 * PI
-    val const = ans
+    while (ans > 2 * PI) ans -= 2 * PI
+    while (ans < -2 * PI) ans += 2 * PI
+    val number = ans
     var power = 3.0
     var factorial = 6.0
     var term = ans
-    var i = 1
     while (abs(term) > eps) {
-        term = pow(const, power) / factorial
-        if (i % 2 == 1) ans -= term
+        term = pow(number, power) / factorial
+        if (power.toInt() % 4 == 3) ans -= term
         else ans += term
         power += 2
-        i++
         factorial *= power * (power - 1)
     }
     return ans
@@ -192,19 +200,18 @@ fun sin(x: Double, eps: Double): Double {
  */
 fun cos(x: Double, eps: Double): Double {
     var ans = 1.0
-    var const = x
-    while (abs(const) >= 2 * PI) const -= 2 * PI
+    var number = x
+    while (number > 2 * PI) number -= 2 * PI
+    while (number < -2 * PI) number += 2 * PI
     var power = 2.0
     var factorial = 2.0
-    var i = 1
     var term = ans
     while (term >= eps) {
-        term = pow(const, power) / factorial
-        if (i % 2 == 1) ans -= term
+        term = pow(number, power) / factorial
+        if (power.toInt() % 4 == 2) ans -= term
         else ans += term
         power += 2
         factorial *= power * (power - 1)
-        i++
     }
     return ans
 }
@@ -232,23 +239,7 @@ fun revert(n: Int): Int {
  * первая цифра равна последней, вторая -- предпоследней и так далее.
  * 15751 -- палиндром, 3653 -- нет.
  */
-fun isPalindrome(n: Int): Boolean {
-    var number = n
-    var tenSize = 1
-    while (number > 9) {
-        tenSize *= 10
-        number /= 10
-    }
-    number = n
-    while (number > 9) {
-        if (number % 10 == number / tenSize) {
-            number %= tenSize
-            tenSize /= 100
-            number /= 10
-        } else return false
-    }
-    return true
-}
+fun isPalindrome(n: Int): Boolean = revert(n) == n
 
 /**
  * Средняя
@@ -261,7 +252,6 @@ fun hasDifferentDigits(n: Int): Boolean {
     var lastDigit = n % 10
     while (number > 0) {
         if (lastDigit != number % 10) return true
-        lastDigit = number % 10
         number /= 10
     }
     return false
@@ -279,13 +269,8 @@ fun squareSequenceDigit(n: Int): Int {
     var i = 1
     var square = 1
     while (n > i) {
-        var sizeOfNumber = 1
         square = number * number
-        while (square / 10 > 0) {
-            sizeOfNumber++
-            square /= 10
-        }
-        square = number * number
+        var sizeOfNumber = digitNumber(square)
         if (i + sizeOfNumber < n) {
             i += sizeOfNumber
             number++
@@ -311,31 +296,23 @@ fun squareSequenceDigit(n: Int): Int {
 fun fibSequenceDigit(n: Int): Int {
     var lastFib2 = 1
     var i = 3
-    var fib = 2
+    var ans = 2
     var lastFib1 = 1
-    while (n > i) {
-        var sizeOfNumber = 1
-        val l = fib
-        fib = lastFib1 + lastFib2
-        lastFib1 = lastFib2
-        lastFib2 = l
-        while (fib / 10 > 0) {
-            sizeOfNumber++
-            fib /= 10
-        }
-        fib = lastFib1 + lastFib2
-        if (i + sizeOfNumber < n) {
+    while (n >= i) {
+        var sizeOfNumber = digitNumber(ans)
+        if (i + sizeOfNumber <= n) {
             i += sizeOfNumber
-            fib = lastFib1 + lastFib2
             lastFib1 = lastFib2
-            lastFib2 = l
-        } else {
-            while (i < n) {
+            lastFib2 = ans
+            ans = lastFib1 + lastFib2
+        }
+        else {
+            while (i <= n) {
                 i++
-                fib %= pow(10.0, sizeOfNumber.toDouble()).toInt()
+                ans %= pow(10.0, sizeOfNumber.toDouble()).toInt()
                 sizeOfNumber--
             }
-            return fib / pow(10.0, sizeOfNumber.toDouble()).toInt()
+            return ans / pow(10.0, sizeOfNumber.toDouble()).toInt()
         }
     }
     return 1
