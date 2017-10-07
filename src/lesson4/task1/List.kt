@@ -202,7 +202,26 @@ fun accumulate(list: MutableList<Double>): MutableList<Double>{
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun isPrime(n: Int): Boolean{
+    if(n < 2) return false
+    for(i in 2..sqrt(n.toDouble()).toInt())
+        if(n % i == 0) return false
+    return true
+}
+fun factorize(n: Int): List<Int> {
+    var number = n
+    var ans = listOf<Int>()
+    var fact = 2
+    while(number != 1){
+        while(!isPrime(fact)) fact++
+        while(number % fact == 0){
+            ans += fact
+            number /= fact
+        }
+        fact++
+    }
+    return ans
+}
 
 /**
  * Сложная
@@ -210,7 +229,11 @@ fun factorize(n: Int): List<Int> = TODO()
  * Разложить заданное натуральное число n > 1 на простые множители.
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String{
+    var listOfNumber = factorize(n)
+    var ans = listOfNumber.joinToString(separator ="*")
+    return ans
+}
 
 /**
  * Средняя
@@ -219,7 +242,21 @@ fun factorizeToString(n: Int): String = TODO()
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int>{
+    var ans = mutableListOf<Int>()
+    var number = n
+    while(number >= base){
+        ans.add(number % base)
+        number /= base
+    }
+    ans.add(number)
+    for(i in 0..(ans.size - 1)/2){
+        var element = ans[i]
+        ans[i] = ans[ans.size - 1 - i]
+        ans[ans.size - 1 - i] = element
+    }
+    return ans
+}
 
 /**
  * Сложная
@@ -229,7 +266,42 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    var list = convert(n, base)
+    var ans = mutableListOf<Any>()
+    for(i in 0 until list.size){
+        when (list[i]) {
+            10 -> ans.add('a')
+            11 -> ans.add('b')
+            12 -> ans.add('c')
+            13 -> ans.add('d')
+            14 -> ans.add('e')
+            15 -> ans.add('f')
+            16 -> ans.add('g')
+            17 -> ans.add('h')
+            18 -> ans.add('i')
+            19 -> ans.add('j')
+            20 -> ans.add('k')
+            21 -> ans.add('l')
+            22 -> ans.add('m')
+            23 -> ans.add('n')
+            24 -> ans.add('o')
+            25 -> ans.add('p')
+            26 -> ans.add('q')
+            27 -> ans.add('r')
+            28 -> ans.add('s')
+            29 -> ans.add('t')
+            30 -> ans.add('u')
+            31 -> ans.add('v')
+            32 -> ans.add('w')
+            33 -> ans.add('x')
+            34 -> ans.add('y')
+            35 -> ans.add('z')
+            else -> ans.add(list[i])
+        }
+    }
+    return ans.joinToString(separator = "")
+}
 
 /**
  * Средняя
@@ -238,7 +310,15 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    var ans = 0
+    var power = (digits.size - 1).toDouble()
+    for(element in digits){
+        ans += element * pow(base.toDouble(), power).toInt()
+        power--
+    }
+    return ans
+}
 
 /**
  * Сложная
@@ -249,7 +329,51 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int{
+    var ans = 0
+    var power = pow(base.toDouble(), (str.length-1).toDouble()).toInt()
+    for(i in 0 until str.length){
+        when{
+            str[i] == '1' -> ans += power
+            str[i] == '2' -> ans += 2 * power
+            str[i] == '3' -> ans += 3 * power
+            str[i] == '4' -> ans += 4 * power
+            str[i] == '5' -> ans += 5 * power
+            str[i] == '6' -> ans += 6 * power
+            str[i] == '7' -> ans += 7 * power
+            str[i] == '8' -> ans += 8 * power
+            str[i] == '9' -> ans += 9 * power
+            str[i] == 'a' -> ans += 10 * power
+            str[i] == 'b' -> ans += 11 * power
+            str[i] == 'c' -> ans += 12 * power
+            str[i] == 'd' -> ans += 13 * power
+            str[i] == 'e' -> ans += 14 * power
+            str[i] == 'f' -> ans += 15 * power
+            str[i] == 'g' -> ans += 16 * power
+            str[i] == 'h' -> ans += 17 * power
+            str[i] == 'i' -> ans += 18 * power
+            str[i] == 'j' -> ans += 19 * power
+            str[i] == 'k' -> ans += 20 * power
+            str[i] == 'l' -> ans += 21 * power
+            str[i] == 'm' -> ans += 22 * power
+            str[i] == 'n' -> ans += 23 * power
+            str[i] == 'o' -> ans += 24 * power
+            str[i] == 'p' -> ans += 25 * power
+            str[i] == 'q' -> ans += 26 * power
+            str[i] == 'r' -> ans += 27 * power
+            str[i] == 's' -> ans += 28 * power
+            str[i] == 't' -> ans += 29 * power
+            str[i] == 'u' -> ans += 30 * power
+            str[i] == 'v' -> ans += 31 * power
+            str[i] == 'w' -> ans += 32 * power
+            str[i] == 'x' -> ans += 33 * power
+            str[i] == 'y' -> ans += 34 * power
+            str[i] == 'z' -> ans += 35 * power
+        }
+        power /= base
+    }
+    return ans
+}
 
 /**
  * Сложная
