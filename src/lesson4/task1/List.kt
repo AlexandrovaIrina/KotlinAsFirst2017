@@ -212,9 +212,9 @@ fun factorize(n: Int): List<Int> {
     var number = n
     var ans = listOf<Int>()
     var fact = 2
-    while(number != 1){
-        while(!isPrime(fact)) fact++
-        while(number % fact == 0){
+    while (number != 1) {
+        while (!isPrime(fact)) fact++
+        while (number % fact == 0) {
             ans += fact
             number /= fact
         }
@@ -231,7 +231,7 @@ fun factorize(n: Int): List<Int> {
  */
 fun factorizeToString(n: Int): String{
     var listOfNumber = factorize(n)
-    var ans = listOfNumber.joinToString(separator ="*")
+    var ans = listOfNumber.joinToString(separator = "*")
     return ans
 }
 
@@ -245,12 +245,12 @@ fun factorizeToString(n: Int): String{
 fun convert(n: Int, base: Int): List<Int>{
     var ans = mutableListOf<Int>()
     var number = n
-    while(number >= base){
+    while (number >= base) {
         ans.add(number % base)
         number /= base
     }
     ans.add(number)
-    for(i in 0..(ans.size - 1)/2){
+    for (i in 0..(ans.size - 1) / 2) {
         var element = ans[i]
         ans[i] = ans[ans.size - 1 - i]
         ans[ans.size - 1 - i] = element
@@ -269,7 +269,7 @@ fun convert(n: Int, base: Int): List<Int>{
 fun convertToString(n: Int, base: Int): String {
     var list = convert(n, base)
     var ans = mutableListOf<Any>()
-    for(i in 0 until list.size){
+    for (i in 0 until list.size) {
         when (list[i]) {
             10 -> ans.add('a')
             11 -> ans.add('b')
@@ -313,7 +313,7 @@ fun convertToString(n: Int, base: Int): String {
 fun decimal(digits: List<Int>, base: Int): Int {
     var ans = 0
     var power = (digits.size - 1).toDouble()
-    for(element in digits){
+    for (element in digits) {
         ans += element * pow(base.toDouble(), power).toInt()
         power--
     }
@@ -331,9 +331,9 @@ fun decimal(digits: List<Int>, base: Int): Int {
  */
 fun decimalFromString(str: String, base: Int): Int{
     var ans = 0
-    var power = pow(base.toDouble(), (str.length-1).toDouble()).toInt()
-    for(i in 0 until str.length){
-        when{
+    var power = pow(base.toDouble(), (str.length - 1).toDouble()).toInt()
+    for (i in 0 until str.length) {
+        when {
             str[i] == '1' -> ans += power
             str[i] == '2' -> ans += 2 * power
             str[i] == '3' -> ans += 3 * power
