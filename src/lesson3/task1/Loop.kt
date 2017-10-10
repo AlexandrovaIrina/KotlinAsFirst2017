@@ -82,13 +82,11 @@ fun fib(n: Int): Int {
     if (n == 1 || n == 2) return 1
     var lastNumber1 = 1
     var lastNumber2 = 1
-    var ans = lastNumber1 + lastNumber2
-    var i = 4
-    while(i <= n){
+    var ans = 1
+    for (i in 3..n) {
+        ans = lastNumber1 + lastNumber2
         lastNumber1 = lastNumber2
         lastNumber2 = ans
-        ans = lastNumber1 + lastNumber2
-        i++
     }
     return ans
 }
@@ -116,7 +114,7 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun minDivisor(n: Int): Int {
     var divisor = 2
-    while (divisor < n) {
+    while (divisor <= sqrt(n.toDouble()).toInt()) {
         if(n % divisor == 0) return divisor
         divisor++
     }
@@ -129,13 +127,12 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    var ans = 1
-    var i = 2
-    while (i < n) {
-        if (n % i == 0) ans = i
-        i++
+    var divisor = n / 2
+    while(divisor >= sqrt(n.toDouble()).toInt()){
+        if(n % divisor == 0) return divisor
+        divisor --
     }
-    return ans
+    return 1
 }
 
 /**
@@ -156,12 +153,12 @@ fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     var ans = false
-    val l = sqrt(m * 1.0)
-    val r = sqrt(n * 1.0)
-    var k = l.toInt()
-    while(!ans && k in l.toInt()..r.toInt()){
-        ans = k * k in m..n
-        k++
+    val left = sqrt(m * 1.0)
+    val right = sqrt(n * 1.0)
+    var number = round(left)
+    while(!ans && number in round(left)..round(right)){
+        ans = number * number in m..n
+        number++
     }
     return ans
 }

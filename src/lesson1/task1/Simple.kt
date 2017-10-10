@@ -95,7 +95,11 @@ fun thirdDigit(number: Int): Int = (number/100) % 10
  * прибыл на станцию назначения в h2 часов m2 минут того же дня (например в 13:01).
  * Определите время поезда в пути в минутах (в данном случае 216).
  */
-fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int = minutesArrive + hoursArrive * 60 - (hoursDepart * 60 + minutesDepart)
+fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int {
+    val timeArrive = minutesArrive + hoursArrive * 60
+    val timeDepart = hoursDepart * 60 + minutesDepart
+    return timeArrive - timeDepart
+}
 
 
 /**

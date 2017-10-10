@@ -267,39 +267,13 @@ fun convert(n: Int, base: Int): List<Int>{
  */
 fun convertToString(n: Int, base: Int): String {
     var list = convert(n, base)
-    var ans = mutableListOf<Any>()
+    var ans = ""
     for (i in 0 until list.size) {
-        when (list[i]) {
-            10 -> ans.add('a')
-            11 -> ans.add('b')
-            12 -> ans.add('c')
-            13 -> ans.add('d')
-            14 -> ans.add('e')
-            15 -> ans.add('f')
-            16 -> ans.add('g')
-            17 -> ans.add('h')
-            18 -> ans.add('i')
-            19 -> ans.add('j')
-            20 -> ans.add('k')
-            21 -> ans.add('l')
-            22 -> ans.add('m')
-            23 -> ans.add('n')
-            24 -> ans.add('o')
-            25 -> ans.add('p')
-            26 -> ans.add('q')
-            27 -> ans.add('r')
-            28 -> ans.add('s')
-            29 -> ans.add('t')
-            30 -> ans.add('u')
-            31 -> ans.add('v')
-            32 -> ans.add('w')
-            33 -> ans.add('x')
-            34 -> ans.add('y')
-            35 -> ans.add('z')
-            else -> ans.add(list[i])
-        }
+        if(list[i] > 9)
+            ans += (list[i] + 87).toChar()
+        else ans += list[i]
     }
-    return ans.joinToString(separator = "")
+    return ans
 }
 
 /**
@@ -311,10 +285,10 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var ans = 0
-    var power = (digits.size - 1).toDouble()
-    for (element in digits) {
-        ans += element * pow(base.toDouble(), power).toInt()
-        power--
+    var power = 1
+    for (i in digits.size - 1 downTo 0) {
+        ans += digits[i] * power
+        power *= base
     }
     return ans
 }
@@ -332,42 +306,9 @@ fun decimalFromString(str: String, base: Int): Int{
     var ans = 0
     var power = pow(base.toDouble(), (str.length - 1).toDouble()).toInt()
     for (i in 0 until str.length) {
-        when {
-            str[i] == '1' -> ans += power
-            str[i] == '2' -> ans += 2 * power
-            str[i] == '3' -> ans += 3 * power
-            str[i] == '4' -> ans += 4 * power
-            str[i] == '5' -> ans += 5 * power
-            str[i] == '6' -> ans += 6 * power
-            str[i] == '7' -> ans += 7 * power
-            str[i] == '8' -> ans += 8 * power
-            str[i] == '9' -> ans += 9 * power
-            str[i] == 'a' -> ans += 10 * power
-            str[i] == 'b' -> ans += 11 * power
-            str[i] == 'c' -> ans += 12 * power
-            str[i] == 'd' -> ans += 13 * power
-            str[i] == 'e' -> ans += 14 * power
-            str[i] == 'f' -> ans += 15 * power
-            str[i] == 'g' -> ans += 16 * power
-            str[i] == 'h' -> ans += 17 * power
-            str[i] == 'i' -> ans += 18 * power
-            str[i] == 'j' -> ans += 19 * power
-            str[i] == 'k' -> ans += 20 * power
-            str[i] == 'l' -> ans += 21 * power
-            str[i] == 'm' -> ans += 22 * power
-            str[i] == 'n' -> ans += 23 * power
-            str[i] == 'o' -> ans += 24 * power
-            str[i] == 'p' -> ans += 25 * power
-            str[i] == 'q' -> ans += 26 * power
-            str[i] == 'r' -> ans += 27 * power
-            str[i] == 's' -> ans += 28 * power
-            str[i] == 't' -> ans += 29 * power
-            str[i] == 'u' -> ans += 30 * power
-            str[i] == 'v' -> ans += 31 * power
-            str[i] == 'w' -> ans += 32 * power
-            str[i] == 'x' -> ans += 33 * power
-            str[i] == 'y' -> ans += 34 * power
-            str[i] == 'z' -> ans += 35 * power
+        when (str[i].toInt()){
+            in 48..58 -> ans += (str[i].toInt() - 48) * power
+            else -> ans += (str[i].toInt() - 87) * power
         }
         power /= base
     }
