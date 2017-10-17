@@ -249,11 +249,7 @@ fun convert(n: Int, base: Int): List<Int>{
         number /= base
     }
     ans.add(number)
-    for (i in 0..(ans.size - 1) / 2) {
-        var element = ans[i]
-        ans[i] = ans[ans.size - 1 - i]
-        ans[ans.size - 1 - i] = element
-    }
+    ans.reverse()
     return ans
 }
 
@@ -323,66 +319,56 @@ fun decimalFromString(str: String, base: Int): Int{
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String {
-    var ans = ""
+
+fun digitNumber(n: Int): Int {
+    var ans = 1
     var number = n
-    while(number > 0){
-        when {
-            number >= 1000 -> {
-                ans += "M"
-                number -= 1000
-            }
-            number in 900..999 -> {
-                ans += "CM"
-                number -= 900
-            }
-            number in 400..499 -> {
-                ans += "CD"
-                number -= 400
-            }
-            number in 500..899 -> {
-                ans += "D"
-                number -= 500
-            }
-            number in 100..399 -> {
-                ans += "C"
-                number -= 100
-            }
-            number in 90..99 -> {
-                ans += "XC"
-                number -= 90
-            }
-            number in 50..89 -> {
-                ans += "L"
-                number -= 50
-            }
-            number in 40..99 -> {
-                ans += "XL"
-                number -= 40
-            }
-            number in 10..39 -> {
-                ans += "X"
-                number -= 10
-            }
-            number == 9 -> {
-                ans += "IX"
-                number -= 9
-            }
-            number in 5..8 -> {
-                ans += "V"
-                number -= 5
-            }
-            number == 4 -> {
-                ans += "IV"
-                number -= 4
-            }
-            number in 1..3 -> {
-                ans += "I"
-                number -= 1
-            }
-        }
+    while (number / 10 != 0) {
+        ans++
+        number /= 10
     }
     return ans
+}
+
+fun roman(n: Int): String {
+    var ans = mutableListOf<Char>()
+    val romanNumbers = listOf('I', 'V', 'X', 'L', 'C', 'D', 'M')
+    var number = n
+    var flag = true
+    var sizeOfNumber = digitNumber(n)
+    var power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
+    while(number != 0){
+        if(number < 0){
+            if(flag && sizeOfNumber != 1) ans.add(ans.size - 1, romanNumbers[(sizeOfNumber - 2) * 2])
+            else ans.add(ans.size - 1, romanNumbers[(sizeOfNumber - 1) * 2])
+            if(number + power > power - power / 10){
+                number += power / 10
+            }
+            else {
+                number += power
+            }
+            if(number - power !in -power / 10 until 0) {
+                sizeOfNumber = digitNumber(number)
+            }
+            power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
+        }
+        else{
+            if(number - 5 * power >= 0 || number - 5 * power >= -power) {
+                number -= 5 * power
+                ans.add(romanNumbers[(sizeOfNumber - 1) * 2 + 1])
+                flag = false
+            }
+            else {
+                number -= power
+                flag = true
+                ans.add(romanNumbers[(sizeOfNumber - 1) * 2])
+                if(number == -1) sizeOfNumber = 1
+            }
+            if(number > 0 && number - power !in -power / 10 until 0) sizeOfNumber = digitNumber(number)
+            power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
+        }
+    }
+    return ans.joinToString(separator = "")
 }
 /**
  * Очень сложная
