@@ -337,35 +337,34 @@ fun roman(n: Int): String {
     var flag = true
     var sizeOfNumber = digitNumber(n)
     var power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
-    while(number != 0){
-        if(number < 0){
-            if(flag && sizeOfNumber != 1) ans.add(ans.size - 1, romanNumbers[(sizeOfNumber - 2) * 2])
+    if (power > 1000) power = 1000
+    while (number != 0) {
+        if (number < 0) {
+            if (flag && sizeOfNumber != 1) ans.add(ans.size - 1, romanNumbers[(sizeOfNumber - 2) * 2])
             else ans.add(ans.size - 1, romanNumbers[(sizeOfNumber - 1) * 2])
-            if(number + power > power - power / 10){
+            if (number + power > power - power / 10) {
                 number += power / 10
-            }
-            else {
+            } else {
                 number += power
             }
-            if(number - power !in -power / 10 until 0) {
+            if (number - power !in -power / 10 until 0) {
                 sizeOfNumber = digitNumber(number)
             }
             power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
-        }
-        else{
-            if(number < 1000 && number - 5 * power >= -power) {
+        } else {
+            if (number < 1000 && number - 5 * power >= -power) {
                 number -= 5 * power
                 ans.add(romanNumbers[(sizeOfNumber - 1) * 2 + 1])
                 flag = false
-            }
-            else {
+            } else {
                 number -= power
                 flag = true
-                ans.add(romanNumbers[(sizeOfNumber - 1) * 2])
-                if(number == -1) sizeOfNumber = 1
+                if (sizeOfNumber <= 4) ans.add(romanNumbers[(sizeOfNumber - 1) * 2])
+                else ans.add(romanNumbers[6])
+                if (number == -1) sizeOfNumber = 1
             }
-            if(number > 0 && number - power !in -power / 10 until 0) sizeOfNumber = digitNumber(number)
-            power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
+            if (number > 0 && number - power !in -power / 10 until 0) sizeOfNumber = digitNumber(number)
+            if (sizeOfNumber <= 4) power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
         }
     }
     return ans.joinToString(separator = "")
