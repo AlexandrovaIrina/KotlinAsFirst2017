@@ -353,7 +353,7 @@ fun roman(n: Int): String {
             power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
         }
         else{
-            if(number - 5 * power >= 0 || number - 5 * power >= -power) {
+            if(number < 1000 && number - 5 * power >= -power) {
                 number -= 5 * power
                 ans.add(romanNumbers[(sizeOfNumber - 1) * 2 + 1])
                 flag = false
