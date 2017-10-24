@@ -263,13 +263,14 @@ fun convert(n: Int, base: Int): List<Int>{
  */
 fun convertToString(n: Int, base: Int): String {
     var list = convert(n, base)
-    var ans = ""
+    val letterCode = 87
+    var ans = StringBuilder()
     for (i in 0 until list.size) {
-        if(list[i] > 9)
-            ans += (list[i] + 87).toChar()
-        else ans += list[i]
+        if (list[i] > 9)
+            ans.append((list[i] + letterCode).toChar())
+        else ans.append(list[i])
     }
-    return ans
+    return ans.toString()
 }
 
 /**
@@ -300,12 +301,13 @@ fun decimal(digits: List<Int>, base: Int): Int {
  */
 fun decimalFromString(str: String, base: Int): Int{
     var ans = 0
+    val letterCode = 87
+    val numberCode = 48
     var power = pow(base.toDouble(), (str.length - 1).toDouble()).toInt()
     for (i in 0 until str.length) {
-        when (str[i].toInt()){
-            in 48..58 -> ans += (str[i].toInt() - 48) * power
-            else -> ans += (str[i].toInt() - 87) * power
-        }
+        if (str[i].toInt() in numberCode..numberCode + 10) ans += (str[i].toInt() - numberCode) * power
+        else ans += (str[i].toInt() - letterCode) * power
+
         power /= base
     }
     return ans
