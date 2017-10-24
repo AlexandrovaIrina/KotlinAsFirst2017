@@ -331,43 +331,41 @@ fun digitNumber(n: Int): Int {
 }
 
 fun roman(n: Int): String {
-    var ans = mutableListOf<Char>()
-    val romanNumbers = listOf('I', 'V', 'X', 'L', 'C', 'D', 'M')
+    val romanNumbers = listOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
     var number = n
-    var flag = true
-    var sizeOfNumber = digitNumber(n)
+    var ans = StringBuilder()
+    var sizeOfNumber = digitNumber(number)
     var power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
-    if (power > 1000) power = 1000
-    while (number != 0) {
-        if (number < 0) {
-            if (flag && sizeOfNumber != 1) ans.add(ans.size - 1, romanNumbers[(sizeOfNumber - 2) * 2])
-            else ans.add(ans.size - 1, romanNumbers[(sizeOfNumber - 1) * 2])
-            if (number + power > power - power / 10) {
-                number += power / 10
-            } else {
-                number += power
+    while (number > 0) {
+        if (power < 1000) {
+            when {
+                number - power * 9 >= 0 -> {
+                    ans.append(romanNumbers[sizeOfNumber * 4 - 1])
+                    number -= power * 9
+                }
+                number - power * 5 >= 0 -> {
+                    ans.append(romanNumbers[sizeOfNumber * 4 - 2])
+                    number -= power * 5
+                }
+                number - power * 4 >= 0 -> {
+                    ans.append(romanNumbers[sizeOfNumber * 4 - 3])
+                    number -= power * 4
+                }
+                else -> {
+                    ans.append(romanNumbers[sizeOfNumber * 4 - 4])
+                    number -= power
+                }
             }
-            if (number - power !in -power / 10 until 0) {
-                sizeOfNumber = digitNumber(number)
-            }
-            power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
         } else {
-            if (number < 1000 && number - 5 * power >= -power) {
-                number -= 5 * power
-                ans.add(romanNumbers[(sizeOfNumber - 1) * 2 + 1])
-                flag = false
-            } else {
-                number -= power
-                flag = true
-                if (sizeOfNumber <= 4) ans.add(romanNumbers[(sizeOfNumber - 1) * 2])
-                else ans.add(romanNumbers[6])
-                if (number == -1) sizeOfNumber = 1
+            while (number - 1000 >= 0) {
+                number -= 1000
+                ans.append("M")
             }
-            if (number > 0 && number - power !in -power / 10 until 0) sizeOfNumber = digitNumber(number)
-            if (sizeOfNumber <= 4) power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
         }
+        sizeOfNumber = digitNumber(number)
+        power = pow(10.0, (sizeOfNumber - 1).toDouble()).toInt()
     }
-    return ans.joinToString(separator = "")
+    return ans.toString()
 }
 /**
  * Очень сложная
