@@ -3,6 +3,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import java.lang.Math.*
+import lesson3.task1.digitNumber
 
 /**
  * Пример
@@ -321,16 +322,6 @@ fun decimalFromString(str: String, base: Int): Int{
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-
-fun digitNumber(n: Int): Int {
-    var ans = 1
-    var number = n
-    while (number / 10 != 0) {
-        ans++
-        number /= 10
-    }
-    return ans
-}
 
 fun roman(n: Int): String {
     val romanNumbers = listOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")

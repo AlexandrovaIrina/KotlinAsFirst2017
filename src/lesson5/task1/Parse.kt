@@ -75,7 +75,7 @@ fun dateStrToDigit(str: String): String {
     val months30 = listOf(3, 5, 8, 10)
     try {
         var ansDay = parts[0].toInt()
-        if(parts[1] !in months) return ""
+        if (parts[1] !in months) return ""
         var rightFormat = parts[0].toInt() < 31 && months.indexOf(parts[1]) in months30
         if (!rightFormat) rightFormat = parts[0].toInt() < 32 && months.indexOf(parts[1]) in months31
         if (!rightFormat) rightFormat = parts[0].toInt() < 29 && months.indexOf(parts[1]) == 1
@@ -98,7 +98,7 @@ fun dateStrToDigit(str: String): String {
  * Перевести её в строковый формат вида "15 июля 2016".
  * При неверном формате входной строки вернуть пустую строку
  */
-fun dateDigitToStr(digital: String): String{
+fun dateDigitToStr(digital: String): String {
     val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
     val parts = digital.split(".")
     var ans = listOf<String>()
@@ -159,7 +159,7 @@ fun flattenPhoneNumber(phone: String): String {
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int{
+fun bestLongJump(jumps: String): Int {
     var ans = -1
     val parts = jumps.split(' ', '-', '%')
     try {
@@ -185,20 +185,19 @@ fun bestLongJump(jumps: String): Int{
 fun bestHighJump(jumps: String): Int {
     val parts = jumps.split(' ')
     val legalChars = listOf('+', '-', '%')
-    try{
+    try {
         var ans = -1
-        if(parts.size % 2 != 0) return -1
-        for(i in 0 until parts.size step 2){
+        if (parts.size % 2 != 0) return -1
+        for (i in 0 until parts.size step 2) {
             var succesfulJump = false
-            for(j in 0 until parts[i + 1].length){
+            for (j in 0 until parts[i + 1].length) {
                 succesfulJump = parts[i + 1][j] == '+'
-                if(parts[i + 1][j] !in legalChars) return -1
+                if (parts[i + 1][j] !in legalChars) return -1
             }
-            if(succesfulJump && ans < parts[i].toInt()) ans = parts[i].toInt()
+            if (succesfulJump && ans < parts[i].toInt()) ans = parts[i].toInt()
         }
         return ans
-    }
-    catch(e: NumberFormatException){
+    } catch (e: NumberFormatException) {
         return -1
     }
 }
@@ -216,17 +215,16 @@ fun plusMinus(expression: String): Int {
     val legalChars = listOf("+", "-")
     val error = IllegalArgumentException("Description")
     var ans = 0
-    if(parts.size % 2 == 0) throw error
+    if (parts.size % 2 == 0) throw error
     try {
         ans += parts[0].toInt()
-        for(i in 1 until parts.size step 2){
-            if(parts[i] !in legalChars) throw error
-            if(parts[i] == "+") ans += parts[i + 1].toInt()
-            if(parts[i] == "-") ans -= parts[i + 1].toInt()
+        for (i in 1 until parts.size step 2) {
+            if (parts[i] !in legalChars) throw error
+            if (parts[i] == "+") ans += parts[i + 1].toInt()
+            if (parts[i] == "-") ans -= parts[i + 1].toInt()
         }
         return ans
-    }
-    catch(e: NumberFormatException){
+    } catch (e: NumberFormatException) {
         throw error
     }
 }
@@ -244,8 +242,8 @@ fun firstDuplicateIndex(str: String): Int {
     val parts = str.split(" ")
     var ans = -1
     var index = 0
-    for(i in 1 until parts.size){
-        if(parts[i - 1].toLowerCase() == parts[i].toLowerCase()){
+    for (i in 1 until parts.size) {
+        if (parts[i - 1].toLowerCase() == parts[i].toLowerCase()) {
             ans = index
         }
         index += parts[i - 1].length + 1
@@ -268,19 +266,18 @@ fun mostExpensive(description: String): String {
     val products = description.split("; ")
     var ans = ""
     var maxPrice = 0.0
-    try{
-        for(element in products){
+    try {
+        for (element in products) {
             val productAndPrice = element.split(' ')
-            if(productAndPrice.size != 2) return ""
-            if(productAndPrice[1].toDouble() < 0) return ""
-            if(productAndPrice[1].toDouble() > maxPrice){
+            if (productAndPrice.size != 2) return ""
+            if (productAndPrice[1].toDouble() < 0) return ""
+            if (productAndPrice[1].toDouble() > maxPrice) {
                 maxPrice = productAndPrice[1].toDouble()
                 ans = productAndPrice[0]
             }
         }
         return ans
-    }
-    catch(e: NumberFormatException){
+    } catch (e: NumberFormatException) {
         return ""
     }
 }
@@ -296,27 +293,26 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int{
+fun fromRoman(roman: String): Int {
     val romanNumbers = listOf('I', 'V', 'X', 'L', 'C', 'D', 'M')
     var lastNumber = 0
     var currentNumber = 0
-    if(roman[0] !in romanNumbers) return -1
-    if(romanNumbers.indexOf(roman[0]) % 2 == 0){
+    if (roman.length == 0) return -1
+    if (roman[0] !in romanNumbers) return -1
+    if (romanNumbers.indexOf(roman[0]) % 2 == 0) {
         lastNumber = pow(10.0, (romanNumbers.indexOf(roman[0]) / 2).toDouble()).toInt()
-    }
-    else{
+    } else {
         lastNumber = 5 * pow(10.0, (romanNumbers.indexOf(roman[0]) / 2).toDouble()).toInt()
     }
     var ans = lastNumber
-    for (i in 1 until roman.length){
-        if(roman[i] !in romanNumbers) return -1
-        if(romanNumbers.indexOf(roman[i]) % 2 == 0){
+    for (i in 1 until roman.length) {
+        if (roman[i] !in romanNumbers) return -1
+        if (romanNumbers.indexOf(roman[i]) % 2 == 0) {
             currentNumber = pow(10.0, (romanNumbers.indexOf(roman[i]) / 2).toDouble()).toInt()
-        }
-        else{
+        } else {
             currentNumber = 5 * pow(10.0, (romanNumbers.indexOf(roman[i]) / 2).toDouble()).toInt()
         }
-        if(lastNumber < currentNumber) ans += currentNumber - 2 * lastNumber
+        if (lastNumber < currentNumber) ans += currentNumber - 2 * lastNumber
         else ans += currentNumber
         lastNumber = currentNumber
     }
@@ -358,4 +354,56 @@ fun fromRoman(roman: String): Int{
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    var ans = mutableListOf<Int>()
+    var ind = 0
+    var iterator = cells / 2
+    var amountBrackets = 0
+    val errorState = IllegalStateException("computeDeviceCells")
+    val errorArgument = IllegalArgumentException("computeDeviceCells")
+    val legalChars = listOf('+', '-', '>', '<', '[', ']', ' ')
+    for (i in 0 until cells) ans.add(0)
+    var step = 0
+    while (iterator in 0 until cells && ind in 0 until commands.length && step < limit) {
+        step ++
+        if (commands[ind] !in legalChars) throw errorArgument
+        when (commands[ind]) {
+            '+' -> ans[iterator]++
+            '-' -> ans[iterator]--
+            '>' -> iterator++
+            '<' -> iterator--
+            '[' -> {
+                amountBrackets++
+                if (ans[iterator] == 0) {
+                    ind++
+                    val count = amountBrackets - 1
+                    while (ind < commands.length && amountBrackets != count) {
+                        if (commands[ind] == ']') amountBrackets--
+                        if (commands[ind] == '[') amountBrackets++
+                        ind++
+                    }
+                    ind--
+                    if(ind == commands.length && commands[ind - 1] != ']') throw errorArgument
+                }
+            }
+            ']' -> {
+                amountBrackets --
+                if (ans[iterator] != 0) {
+                    ind--
+                    amountBrackets --
+                    val count = amountBrackets + 1
+                    while (ind >= 0 && amountBrackets != count) {
+                        if (commands[ind] == ']') amountBrackets--
+                        if (commands[ind] == '[') amountBrackets++
+                        ind--
+                    }
+                    ind ++
+                    if(ind == -1 && commands[0] != '[') throw errorArgument
+                }
+            }
+        }
+        ind++
+    }
+    if (iterator !in 0 until cells && ind != commands.length - 1) throw errorState
+    return ans
+}
