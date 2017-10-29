@@ -387,6 +387,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 }
             }
             ']' -> {
+                if (amountBrackets == 0) throw errorArgument
                 amountBrackets --
                 if (ans[iterator] != 0) {
                     amountBrackets --
