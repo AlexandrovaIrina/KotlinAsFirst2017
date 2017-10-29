@@ -389,21 +389,24 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             ']' -> {
                 amountBrackets --
                 if (ans[iterator] != 0) {
-                    ind--
                     amountBrackets --
+                    ind--
                     val count = amountBrackets + 1
                     while (ind >= 0 && amountBrackets != count) {
                         if (commands[ind] == ']') amountBrackets--
                         if (commands[ind] == '[') amountBrackets++
                         ind--
                     }
-                    ind ++
-                    if(ind == -1 && commands[0] != '[') throw errorArgument
+                    ind++
+                    if (ind == -1 && commands[0] != '[') throw errorArgument
+                    amountBrackets ++
                 }
             }
         }
         ind++
     }
+    if (limit == step) return ans
+    if (amountBrackets != 0) throw errorArgument
     if (iterator !in 0 until cells && ind != commands.length - 1) throw errorState
     return ans
 }
