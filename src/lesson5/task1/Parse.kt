@@ -1,5 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson5.task1
+
 import java.lang.Math.*
 
 /**
@@ -49,12 +51,10 @@ fun main(args: Array<String>) {
         val seconds = timeStrToSeconds(line)
         if (seconds == -1) {
             println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
-        }
-        else {
+        } else {
             println("Прошло секунд с начала суток: $seconds")
         }
-    }
-    else {
+    } else {
         println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
     }
 }
@@ -70,7 +70,8 @@ fun main(args: Array<String>) {
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
     if (parts.size != 3) return ""
-    val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
+    val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
+            "июля", "августа", "сентября", "октября", "ноября", "декабря")
     val months31 = listOf(0, 2, 4, 6, 7, 9, 11)
     val months30 = listOf(3, 5, 8, 10)
     try {
@@ -99,7 +100,8 @@ fun dateStrToDigit(str: String): String {
  * При неверном формате входной строки вернуть пустую строку
  */
 fun dateDigitToStr(digital: String): String {
-    val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
+    val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
+            "июля", "августа", "сентября", "октября", "ноября", "декабря")
     val parts = digital.split(".")
     var ans = listOf<String>()
     val months31 = listOf(0, 2, 4, 6, 7, 9, 11)
@@ -192,7 +194,7 @@ fun bestHighJump(jumps: String): Int {
             var succesfulJump = false
             for (j in 0 until parts[i + 1].length) {
                 succesfulJump = parts[i + 1][j] == '+'
-                if (parts[i + 1][j] !in legalChars) return -1
+                if (!succesfulJump && parts[i + 1][j] !in legalChars) return -1
             }
             if (succesfulJump && ans < parts[i].toInt()) ans = parts[i].toInt()
         }
@@ -201,6 +203,7 @@ fun bestHighJump(jumps: String): Int {
         return -1
     }
 }
+
 /**
  * Сложная
  *
@@ -213,7 +216,7 @@ fun bestHighJump(jumps: String): Int {
 fun plusMinus(expression: String): Int {
     val parts = expression.split(' ')
     val legalChars = listOf("+", "-")
-    val error = IllegalArgumentException("Description")
+    val error = IllegalArgumentException("plusMinus")
     var ans = 0
     if (parts.size % 2 == 0) throw error
     try {
@@ -240,15 +243,16 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     val parts = str.split(" ")
-    var ans = -1
     var index = 0
-    for (i in 1 until parts.size) {
+    var i = 1
+    while (i < parts.size) {
         if (parts[i - 1].toLowerCase() == parts[i].toLowerCase()) {
-            ans = index
+            return index
         }
         index += parts[i - 1].length + 1
+        i++
     }
-    return ans
+    return -1
 }
 
 /**
@@ -318,6 +322,7 @@ fun fromRoman(roman: String): Int {
     }
     return ans
 }
+
 /**
  * Очень сложная
  *
@@ -364,9 +369,14 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     val legalChars = listOf('+', '-', '>', '<', '[', ']', ' ')
     for (i in 0 until cells) ans.add(0)
     var step = 0
+    for (i in 0 until commands.length) {
+        if (commands[i] !in legalChars) throw errorArgument
+        if (commands[i] == '[') amountBrackets++
+        if (commands[i] == ']') amountBrackets--
+    }
+    if (amountBrackets != 0) throw errorArgument
     while (iterator in 0 until cells && ind in 0 until commands.length && step < limit) {
-        step ++
-        if (commands[ind] !in legalChars) throw errorArgument
+        step++
         when (commands[ind]) {
             '+' -> ans[iterator]++
             '-' -> ans[iterator]--
@@ -383,14 +393,13 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                         ind++
                     }
                     ind--
-                    if(ind == commands.length && commands[ind - 1] != ']') throw errorArgument
                 }
             }
             ']' -> {
                 if (amountBrackets == 0) throw errorArgument
-                amountBrackets --
+                amountBrackets--
                 if (ans[iterator] != 0) {
-                    amountBrackets --
+                    amountBrackets--
                     ind--
                     val count = amountBrackets + 1
                     while (ind >= 0 && amountBrackets != count) {
@@ -399,15 +408,13 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                         ind--
                     }
                     ind++
-                    if (ind == -1 && commands[0] != '[') throw errorArgument
-                    amountBrackets ++
+                    amountBrackets++
                 }
             }
         }
         ind++
     }
     if (limit == step) return ans
-    if (amountBrackets != 0) throw errorArgument
     if (iterator !in 0 until cells && ind != commands.length - 1) throw errorState
     return ans
 }
