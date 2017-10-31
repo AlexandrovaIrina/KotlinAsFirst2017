@@ -275,10 +275,11 @@ fun mostExpensive(description: String): String {
             val productAndPrice = element.split(' ')
             if (productAndPrice.size != 2) return ""
             if (productAndPrice[1].toDouble() < 0) return ""
-            if (productAndPrice[1].toDouble() > maxPrice) {
+            if (productAndPrice[1].toDouble() >= maxPrice) {
                 maxPrice = productAndPrice[1].toDouble()
                 ans = productAndPrice[0]
             }
+
         }
         return ans
     } catch (e: NumberFormatException) {
@@ -360,14 +361,13 @@ fun fromRoman(roman: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
-    var ans = mutableListOf<Int>()
+    var ans = MutableList(cells){0}
     var ind = 0
     var iterator = cells / 2
     var amountBrackets = 0
     val errorState = IllegalStateException("computeDeviceCells")
     val errorArgument = IllegalArgumentException("computeDeviceCells")
     val legalChars = listOf('+', '-', '>', '<', '[', ']', ' ')
-    for (i in 0 until cells) ans.add(0)
     var step = 0
     for (i in 0 until commands.length) {
         if (commands[i] !in legalChars) throw errorArgument
