@@ -67,23 +67,26 @@ fun main(args: Array<String>) {
  * День и месяц всегда представлять двумя цифрами, например: 03.04.2011.
  * При неверном формате входной строки вернуть пустую строку
  */
+val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
+        "июля", "августа", "сентября", "октября", "ноября", "декабря")
+val months31 = listOf(0, 2, 4, 6, 7, 9, 11)
+val months30 = listOf(3, 5, 8, 10)
+fun correctDate (parts: List<String>):Boolean {
+    var rightFormat = parts[0].toInt() < 31 && months.indexOf(parts[1]) in months30
+    if (!rightFormat) rightFormat = parts[0].toInt() < 32 && months.indexOf(parts[1]) in months31
+    if (!rightFormat) rightFormat = parts[0].toInt() < 29 && months.indexOf(parts[1]) == 1
+    var leapYear = parts[2].toInt() % 4 == 0 && parts[2].toInt() % 100 != 0 || parts[2].toInt() % 400 == 0
+    if (!rightFormat && leapYear) rightFormat = parts[0].toInt() == 29 && months.indexOf(parts[1]) == 1
+    return rightFormat
+}
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
     if (parts.size != 3) return ""
-    val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
-            "июля", "августа", "сентября", "октября", "ноября", "декабря")
-    val months31 = listOf(0, 2, 4, 6, 7, 9, 11)
-    val months30 = listOf(3, 5, 8, 10)
     try {
         var ansDay = parts[0].toInt()
         if (parts[1] !in months) return ""
-        var rightFormat = parts[0].toInt() < 31 && months.indexOf(parts[1]) in months30
-        if (!rightFormat) rightFormat = parts[0].toInt() < 32 && months.indexOf(parts[1]) in months31
-        if (!rightFormat) rightFormat = parts[0].toInt() < 29 && months.indexOf(parts[1]) == 1
-        var leapYear = parts[2].toInt() % 4 == 0 && parts[2].toInt() % 100 != 0 || parts[2].toInt() % 400 == 0
-        if (!rightFormat && leapYear) rightFormat = parts[0].toInt() == 29 && months.indexOf(parts[1]) == 1
         var ansMonth: Int
-        if (!rightFormat) return ""
+        if (!correctDate(parts)) return ""
         else ansMonth = months.indexOf(parts[1]) + 1
         var ansYear = parts[2].toInt()
         return String.format("%02d.%02d.%d", ansDay, ansMonth, ansYear)
@@ -100,29 +103,19 @@ fun dateStrToDigit(str: String): String {
  * При неверном формате входной строки вернуть пустую строку
  */
 fun dateDigitToStr(digital: String): String {
-    val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
-            "июля", "августа", "сентября", "октября", "ноября", "декабря")
     val parts = digital.split(".")
     var ans = listOf<String>()
-    val months31 = listOf(0, 2, 4, 6, 7, 9, 11)
-    val months30 = listOf(3, 5, 8, 10)
     if (parts.size != 3) return ""
     try {
         ans += (parts[0].toInt()).toString()
         if (parts[1].toInt() in 1..months.size) ans += months[parts[1].toInt() - 1]
         else return ""
         ans += parts[2]
-        var rightDate = parts[1].toInt() - 1 in months30 && parts[0].toInt() <= 30
-        if (!rightDate) rightDate = parts[1].toInt() - 1 in months31 && parts[0].toInt() <= 31
-        if (!rightDate) rightDate = parts[1].toInt() == 2 && parts[0].toInt() < 29
-        var leapYear = parts[2].toInt() % 4 == 0 && parts[2].toInt() % 100 != 0 || parts[2].toInt() % 400 == 0
-        if (!rightDate) rightDate = leapYear && parts[0].toInt() == 2 && parts[1].toInt() == 2
-        if (!rightDate) return ""
+        if (!correctDate(ans)) return ""
         return ans.joinToString(separator = " ")
     } catch (e: NumberFormatException) {
         return ""
     }
-
 }
 
 /**
@@ -191,12 +184,12 @@ fun bestHighJump(jumps: String): Int {
         var ans = -1
         if (parts.size % 2 != 0) return -1
         for (i in 0 until parts.size step 2) {
-            var succesfulJump = false
-            for (j in 0 until parts[i + 1].length) {
-                succesfulJump = parts[i + 1][j] == '+'
-                if (!succesfulJump && parts[i + 1][j] !in legalChars) return -1
+            var successfulJump = false
+            for(char in parts[i + 1]){
+                successfulJump = char == '+'
+                if(!successfulJump && !legalChars.contains(char)) return -1
             }
-            if (succesfulJump && ans < parts[i].toInt()) ans = parts[i].toInt()
+            if (successfulJump && ans < parts[i].toInt()) ans = parts[i].toInt()
         }
         return ans
     } catch (e: NumberFormatException) {
@@ -360,6 +353,16 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
+fun moveBecouseOfBrackets(commands: String, ind: Int, count: Int, amountBrackets: Int, bracketType: Int): Pair<Int, Int>{
+    var index = ind
+    var amount = amountBrackets
+    while (index in 0 until commands.length && amount != count) {
+        if (commands[index] == ']') amount--
+        if (commands[index] == '[') amount++
+        index += bracketType
+    }
+    return Pair(index, amount)
+}
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var ans = MutableList(cells){0}
     var ind = 0
@@ -387,12 +390,9 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 if (ans[iterator] == 0) {
                     ind++
                     val count = amountBrackets - 1
-                    while (ind < commands.length && amountBrackets != count) {
-                        if (commands[ind] == ']') amountBrackets--
-                        if (commands[ind] == '[') amountBrackets++
-                        ind++
-                    }
-                    ind--
+                    val pair = moveBecouseOfBrackets(commands, ind, count, amountBrackets, 1)
+                    ind = pair.first - 1
+                    amountBrackets = pair.second
                 }
             }
             ']' -> {
@@ -402,19 +402,15 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                     amountBrackets--
                     ind--
                     val count = amountBrackets + 1
-                    while (ind >= 0 && amountBrackets != count) {
-                        if (commands[ind] == ']') amountBrackets--
-                        if (commands[ind] == '[') amountBrackets++
-                        ind--
-                    }
-                    ind++
-                    amountBrackets++
+                    val pair = moveBecouseOfBrackets(commands, ind, count, amountBrackets, -1)
+                    ind = pair.first + 1
+                    amountBrackets = pair.second + 1
                 }
             }
         }
         ind++
     }
     if (limit == step) return ans
-    if (iterator !in 0 until cells && ind != commands.length - 1) throw errorState
+    if (iterator !in 0 until cells && ind !in 0 until commands.length) throw errorState
     return ans
 }
