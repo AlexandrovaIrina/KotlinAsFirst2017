@@ -197,10 +197,11 @@ class Line constructor(val b: Double, val angle: Double) {
 fun lineBySegment(s: Segment): Line {
     var bLine = - s.begin.x
     if (s.begin.x == s.end.x) return Line(bLine, PI / 2)
-    var Alpha = (s.end.y - s.begin.y) / (s.end.x - s.begin.x)
-    bLine = s.begin.y - s.begin.x * Alpha
-    Alpha = sqrt(1 / (1 + sqr(Alpha)))
-    return Line(bLine * Alpha, acos(Alpha))
+    var alpha = (s.end.y - s.begin.y) / (s.end.x - s.begin.x)
+    if(alpha < 0) alpha = PI + atan(alpha)
+    else alpha = atan(alpha)
+    bLine = s.begin.y * cos(alpha) - s.begin.x * sin(alpha)
+    return Line(bLine, alpha)
 }
 
 /**
@@ -211,10 +212,11 @@ fun lineBySegment(s: Segment): Line {
 fun lineByPoints(a: Point, b: Point): Line {
     var bLine = - b.x
     if (a.x == b.x) return Line(bLine, PI / 2)
-    var Alpha = (b.y - a.y) / (b.x - a.x)
-    bLine = a.y - a.x * Alpha
-    Alpha = sqrt(1 / (1 + sqr(Alpha)))
-    return Line(bLine * Alpha, acos(Alpha))
+    var alpha = (b.y - a.y) / (b.x - a.x)
+    if(alpha < 0) alpha = PI + atan(alpha)
+    else alpha = atan(alpha)
+    bLine = a.y * cos(alpha) - a.x * sin(alpha)
+    return Line(bLine, alpha)
 }
 
 /**
@@ -227,14 +229,14 @@ fun bisectorByPoints(a: Point, b: Point): Line {
     val bisectorY = (a.y + b.y) / 2
     var bLine = bisectorY
     if (a.x == b.x) return Line(bLine, 0.0)
-    var Alpha = (b.y - a.y) / (b.x - a.x)
-    if(Alpha < 0) Alpha = -sqrt(1 / (1 + sqr(Alpha)))
-    else Alpha = sqrt(1 / (1 + sqr(Alpha)))
-    Alpha = acos(Alpha)
-    if(Alpha > PI / 2) Alpha -= PI / 2
-    else Alpha += PI / 2
-    bLine = bisectorY * cos(Alpha) - bisectorX * sin(Alpha)
-    return Line(bLine, Alpha)
+    var alpha = (b.y - a.y) / (b.x - a.x)
+    if(alpha < 0) alpha = -sqrt(1 / (1 + sqr(alpha)))
+    else alpha = sqrt(1 / (1 + sqr(alpha)))
+    alpha = acos(alpha)
+    if(alpha > PI / 2) alpha -= PI / 2
+    else alpha += PI / 2
+    bLine = bisectorY * cos(alpha) - bisectorX * sin(alpha)
+    return Line(bLine, alpha)
 }
 
 /**
@@ -250,7 +252,7 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
     var distanceBetweenCircles = circles[0].distance(circles[1])
     for(i in 0 until circles.size - 1){
         for(j in 1 until circles.size){
-            if(distanceBetweenCircles > circles[i].distance(circles[j]) && circles[i].distance(circles[j]) != 0.0){
+            if(i != j && distanceBetweenCircles > circles[i].distance(circles[j])){
                 ans = Pair(circles[i], circles[j])
                 distanceBetweenCircles = circles[i].distance(circles[j])
             }
