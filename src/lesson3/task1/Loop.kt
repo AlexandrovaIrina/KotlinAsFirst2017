@@ -80,13 +80,13 @@ fun digitNumber(n: Int): Int {
  */
 fun fib(n: Int): Int {
     if (n == 1 || n == 2) return 1
-    var lastNumber1 = 1
-    var lastNumber2 = 1
+    var lastNumberFibonacci1 = 1
+    var lastNumberFibonacci2 = 1
     var ans = 1
     for (i in 3..n) {
-        ans = lastNumber1 + lastNumber2
-        lastNumber1 = lastNumber2
-        lastNumber2 = ans
+        ans = lastNumberFibonacci1 + lastNumberFibonacci2
+        lastNumberFibonacci1 = lastNumberFibonacci2
+        lastNumberFibonacci2 = ans
     }
     return ans
 }
