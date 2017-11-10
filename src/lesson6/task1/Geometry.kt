@@ -90,7 +90,7 @@ data class Circle(val center: Point, val radius: Double) {
      */
     fun contains(p: Point): Boolean {
         val distanceBetweenPointAndCenter = distanceBetweenPoints(p)
-        return distanceBetweenPointAndCenter <= radius + 0.2
+        return distanceBetweenPointAndCenter <= radius
     }
 }
 
@@ -291,7 +291,8 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  */
 fun minContainingCircle(vararg points: Point): Circle {
     val e = IllegalArgumentException("minContainingCircle")
-    if(points.size < 3) throw e
+    if(points.size == 1) return Circle(points[0], 0.0)
+    if(points.size == 0) throw e
     var ans = Triple(points[0], points[1], points[2])
     var sideAB = distanceBetweenPoints(points[0], points[1])
     var sideBC = distanceBetweenPoints(points[2], points[1])
