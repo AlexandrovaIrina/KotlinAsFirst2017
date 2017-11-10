@@ -90,7 +90,7 @@ data class Circle(val center: Point, val radius: Double) {
      */
     fun contains(p: Point): Boolean {
         val distanceBetweenPointAndCenter = distanceBetweenPoints(p)
-        return distanceBetweenPointAndCenter <= radius
+        return distanceBetweenPointAndCenter - radius <= 10e-14
     }
 }
 
@@ -293,8 +293,9 @@ fun minContainingCircle(vararg points: Point): Circle {
     val e = IllegalArgumentException("minContainingCircle")
     if(points.size == 1) return Circle(points[0], 0.0)
     if(points.size == 0) throw e
-    var ans = Triple(points[0], points[1], points[2])
+    var ansTriple = Triple(points[0], points[1], points[2])
     var sideAB = distanceBetweenPoints(points[0], points[1])
+    var diameter = sideAB
     var sideBC = distanceBetweenPoints(points[2], points[1])
     var sideCA = distanceBetweenPoints(points[0], points[2])
     var triangleLength = (sideAB + sideBC + sideCA)/ 2
@@ -310,11 +311,32 @@ fun minContainingCircle(vararg points: Point): Circle {
                         * (triangleLength - sideBC) * (triangleLength - sideCA))
                 if(currentSquare > triangleSquare){
                     triangleSquare = currentSquare
-                    ans = Triple(points[i], points[j], points[k])
+                    ansTriple = Triple(points[i], points[j], points[k])
                 }
             }
         }
     }
-    return circleByThreePoints(ans.first, ans.second, ans.third)
+    var ansPair = Pair(points[0], points[1])
+    for(i in 0 until points.size - 1){
+        for(j in i + 1 until points.size){
+            val currentDiameter = distanceBetweenPoints(points[i], points[j])
+            if(currentDiameter > diameter){
+                diameter = currentDiameter
+                ansPair = Pair(points[i], points[j])
+            }
+        }
+    }
+    val ansThreePoints = circleByThreePoints(ansTriple.first, ansTriple.second, ansTriple.third)
+    val ansDiameter = circleByDiameter(Segment(ansPair.first, ansPair.second))
+    var flagThreePoints = true
+    var flagDiameter = true
+    var ind = 0
+    while(ind < points.size && flagThreePoints && flagDiameter){
+        flagThreePoints = ansThreePoints.contains(points[ind])
+        flagDiameter = ansDiameter.contains(points[ind])
+        ind ++
+    }
+    if(ansThreePoints.radius < ansDiameter.radius && flagThreePoints || !flagDiameter) return ansThreePoints
+    return ansDiameter
 }
 
