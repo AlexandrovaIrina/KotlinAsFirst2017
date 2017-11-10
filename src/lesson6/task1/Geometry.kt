@@ -90,7 +90,7 @@ data class Circle(val center: Point, val radius: Double) {
      */
     fun contains(p: Point): Boolean {
         val distanceBetweenPointAndCenter = distanceBetweenPoints(p)
-        return distanceBetweenPointAndCenter <= radius + 0.02
+        return distanceBetweenPointAndCenter <= radius + 0.2
     }
 }
 
@@ -292,24 +292,28 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
 fun minContainingCircle(vararg points: Point): Circle {
     val e = IllegalArgumentException("minContainingCircle")
     if(points.size < 3) throw e
-    var ans =  circleByThreePoints(points[0], points[1], points[2])
-    for (i in 0 until points.size - 2) {
-        for (j in i + 1 until points.size - 1) {
-            for (k in j + 1 until points.size) {
-                    val currentCircle = circleByThreePoints(points[i], points[j], points[k])
-                    var flag = true
-                    var ind = 0
-                    while (flag && ind < points.size) {
-                        flag = currentCircle.contains(points[ind])
-                        ind++
-                    }
-                    if (flag && (currentCircle.radius < ans.radius || ans == circleByThreePoints(points[0], points[1], points[2]))) {
-                        ans = currentCircle
-                    }
-
+    var ans = Triple(points[0], points[1], points[2])
+    var sideAB = distanceBetweenPoints(points[0], points[1])
+    var sideBC = distanceBetweenPoints(points[2], points[1])
+    var sideCA = distanceBetweenPoints(points[0], points[2])
+    var triangleLength = (sideAB + sideBC + sideCA)/ 2
+    var triangleSquare = sqrt(triangleLength * (triangleLength - sideAB) * (triangleLength - sideBC) * (triangleLength - sideCA))
+    for(i in 0 until points.size - 2){
+        for(j in i + 1 until points.size - 1){
+            sideAB = distanceBetweenPoints(points[i], points[j])
+            for(k in j + 1 until points.size){
+                sideBC = distanceBetweenPoints(points[j], points[k])
+                sideCA = distanceBetweenPoints(points[k], points[i])
+                triangleLength = (sideAB + sideBC + sideCA)/ 2
+                val currentSquare = sqrt(triangleLength * (triangleLength - sideAB)
+                        * (triangleLength - sideBC) * (triangleLength - sideCA))
+                if(currentSquare > triangleSquare){
+                    triangleSquare = currentSquare
+                    ans = Triple(points[i], points[j], points[k])
+                }
             }
         }
     }
-    return ans
+    return circleByThreePoints(ans.first, ans.second, ans.third)
 }
 
