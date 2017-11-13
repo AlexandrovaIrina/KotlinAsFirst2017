@@ -300,7 +300,7 @@ fun romanToInt(roman: String, ind: Int): Int {
 
 fun fromRoman(roman: String): Int {
     var currentNumber: Int
-    if (roman.isEmpty() && roman[0] !in romanNumbers) return -1
+    if (roman.isEmpty() || roman[0] !in romanNumbers) return -1
     var lastNumber = romanToInt(roman, 0)
     var ans = lastNumber
     for (i in 1 until roman.length) {
