@@ -408,6 +408,6 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         ind++
     }
     if (limit == step) return ans
-    if (iterator !in 0 until cells && ind != commands.length - 1) throw errorState
+    if (iterator !in 0 until cells && ind != commands.length) throw errorState
     return ans
 }
