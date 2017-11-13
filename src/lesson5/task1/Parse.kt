@@ -294,8 +294,8 @@ fun mostExpensive(description: String): String {
 val romanNumbers = listOf('I', 'V', 'X', 'L', 'C', 'D', 'M')
 
 fun romanToInt(roman: String, ind: Int): Int {
-    return romanNumbers.indexOf(roman[0]) % 2 * 5 *
-            pow(10.0, (romanNumbers.indexOf(roman[0]) / 2).toDouble()).toInt()
+    return (pow(5.0, (romanNumbers.indexOf(roman[0]) % 2).toDouble()) *
+            pow(10.0, (romanNumbers.indexOf(roman[0]) / 2).toDouble())).toInt()
 }
 
 fun fromRoman(roman: String): Int {
