@@ -291,25 +291,21 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
+val romanNumbers = listOf('I', 'V', 'X', 'L', 'C', 'D', 'M')
+
+fun romanToInt(roman: String, ind: Int): Int {
+    return romanNumbers.indexOf(roman[0]) % 2 * 5 *
+            pow(10.0, (romanNumbers.indexOf(roman[0]) / 2).toDouble()).toInt()
+}
+
 fun fromRoman(roman: String): Int {
-    val romanNumbers = listOf('I', 'V', 'X', 'L', 'C', 'D', 'M')
-    var lastNumber = 0
-    var currentNumber = 0
-    if (roman.length == 0) return -1
-    if (roman[0] !in romanNumbers) return -1
-    if (romanNumbers.indexOf(roman[0]) % 2 == 0) {
-        lastNumber = pow(10.0, (romanNumbers.indexOf(roman[0]) / 2).toDouble()).toInt()
-    } else {
-        lastNumber = 5 * pow(10.0, (romanNumbers.indexOf(roman[0]) / 2).toDouble()).toInt()
-    }
+    var currentNumber: Int
+    if (roman.isEmpty() && roman[0] !in romanNumbers) return -1
+    var lastNumber = romanToInt(roman, 0)
     var ans = lastNumber
     for (i in 1 until roman.length) {
         if (roman[i] !in romanNumbers) return -1
-        if (romanNumbers.indexOf(roman[i]) % 2 == 0) {
-            currentNumber = pow(10.0, (romanNumbers.indexOf(roman[i]) / 2).toDouble()).toInt()
-        } else {
-            currentNumber = 5 * pow(10.0, (romanNumbers.indexOf(roman[i]) / 2).toDouble()).toInt()
-        }
+        currentNumber = romanToInt(roman, i)
         if (lastNumber < currentNumber) ans += currentNumber - 2 * lastNumber
         else ans += currentNumber
         lastNumber = currentNumber
@@ -353,7 +349,8 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun moveBecouseOfBrackets(commands: String, ind: Int, count: Int, amountBrackets: Int, bracketType: Int): Pair<Int, Int>{
+fun moveBecauseOfBrackets(commands: String, ind: Int, count: Int,
+                          amountBrackets: Int, bracketType: Int): Pair<Int, Int>{
     var index = ind
     var amount = amountBrackets
     while (index in 0 until commands.length && amount != count) {
@@ -390,7 +387,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 if (ans[iterator] == 0) {
                     ind++
                     val count = amountBrackets - 1
-                    val pair = moveBecouseOfBrackets(commands, ind, count, amountBrackets, 1)
+                    val pair = moveBecauseOfBrackets(commands, ind, count, amountBrackets, 1)
                     ind = pair.first - 1
                     amountBrackets = pair.second
                 }
@@ -402,7 +399,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                     amountBrackets--
                     ind--
                     val count = amountBrackets + 1
-                    val pair = moveBecouseOfBrackets(commands, ind, count, amountBrackets, -1)
+                    val pair = moveBecauseOfBrackets(commands, ind, count, amountBrackets, -1)
                     ind = pair.first + 1
                     amountBrackets = pair.second + 1
                 }
