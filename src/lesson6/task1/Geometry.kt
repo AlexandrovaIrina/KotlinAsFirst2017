@@ -289,26 +289,24 @@ fun minContainingCircle(vararg points: Point): Circle {
         2 -> return circleByDiameter(Segment(points[0], points[1]))
         3 -> return circleByThreePoints(points[0], points[1], points[2])
     }
-    var ansPoints = mutableListOf(points[0], points[1], points[2], points[3])
-    var crossP = lineByPoints(points[0], points[1]).crossPoint(lineByPoints(points[2], points[3]))
-    var minDistance = -1.0
-    var nearestPoint = Point(0.0, 0.0)
-    for(i in 1 until points.size){
-        if(points[i].distance(crossP) < minDistance || minDistance == -1.0){
-            ansPoints[ansPoints.indexOf(nearestPoint)] = points[i]
-            nearestPoint = points[i]
-            minDistance = points[i].distance(crossP)
+    val firstPair = diameter(*points)
+    val list = points.toMutableList()
+    list.remove(firstPair.begin)
+    list.remove(firstPair.end)
+    val secondPair = diameter(*list.toTypedArray())
+    val crPoint = lineBySegment(firstPair).crossPoint(lineBySegment(secondPair))
+    var ans = mutableListOf(firstPair.begin, firstPair.end, secondPair.begin, secondPair.end)
+    var minDist = -1.0
+    var currentDist: Double
+    var extraPoint = ans[0]
+    for(i in 0 until ans.size){
+        currentDist = ans[i].distance(crPoint)
+        if(currentDist < minDist || minDist == -1.0){
+            minDist = currentDist
+            extraPoint = ans[i]
         }
     }
-    crossP = lineByPoints(ansPoints[0], ansPoints[1]).crossPoint(lineByPoints(ansPoints[2], ansPoints[3]))
-    minDistance = -1.0
-    for(i in 0 until 3){
-        if(crossP.distance(ansPoints[i]) < minDistance || minDistance == -1.0){
-            nearestPoint = ansPoints[i]
-            minDistance = crossP.distance(ansPoints[i])
-        }
-    }
-    ansPoints.remove(nearestPoint)
-     return circleByThreePoints(ansPoints[0], ansPoints[1], ansPoints[2])
+    ans.remove(extraPoint)
+    return circleByThreePoints(ans[0], ans[1], ans[2])
 }
 
