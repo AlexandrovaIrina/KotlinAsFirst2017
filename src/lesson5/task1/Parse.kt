@@ -371,6 +371,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var step = 0
     for (i in 0 until commands.length) {
         if (commands[i] !in legalChars) throw errorArgument
+        if (commands[i] == ']' && amountBrackets == 0) throw errorArgument
         if (commands[i] == '[') amountBrackets++
         if (commands[i] == ']') amountBrackets--
     }
