@@ -316,7 +316,7 @@ fun minContainingCircle(vararg points: Point): Circle {
     var flagTriangle = true
     var flagDiameter = true
     var ind = 0
-    while(ind < points.size && flagDiameter){
+    while(ind < points.size && (flagDiameter || flagTriangle)){
         flagDiameter = ansDiameter.contains(points[ind])
         flagTriangle = ansTriangle.contains(points[ind])
         ind++
