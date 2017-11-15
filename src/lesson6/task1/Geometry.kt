@@ -313,13 +313,15 @@ fun minContainingCircle(vararg points: Point): Circle {
         ansDiameter = circleByDiameter(firstPair)
     }
     else ansDiameter = circleByDiameter(secondPair)
+    var flagTriangle = true
     var flagDiameter = true
     var ind = 0
     while(ind < points.size && flagDiameter){
         flagDiameter = ansDiameter.contains(points[ind])
+        flagTriangle = ansTriangle.contains(points[ind])
         ind++
     }
-    if(ansDiameter.radius < ansTriangle.radius && flagDiameter){
+    if(ansDiameter.radius < ansTriangle.radius && flagDiameter || !flagTriangle){
         return ansDiameter
     }
     else return ansTriangle
