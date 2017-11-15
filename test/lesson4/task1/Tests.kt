@@ -157,12 +157,12 @@ class Tests {
     @Test
     @Tag("Hard")
     fun factorizeToString() {
+        assertEquals("1073676287", factorizeToString(1073676287))
+        assertEquals(Int.MAX_VALUE.toString(), factorizeToString(Int.MAX_VALUE))
         assertEquals("2", factorizeToString(2))
         assertEquals("3*5*5", factorizeToString(75))
         assertEquals("2*3*3*19", factorizeToString(342))
         assertEquals("7*7*31*31*151*151", factorizeToString(1073676289))
-        assertEquals("1073676287", factorizeToString(1073676287))
-        assertEquals(Int.MAX_VALUE.toString(), factorizeToString(Int.MAX_VALUE))
     }
 
     @Test
@@ -208,11 +208,13 @@ class Tests {
     @Test
     @Tag("Hard")
     fun roman() {
+        assertEquals("MMMMMMMMMMMMMMMDCCXXV", roman(15725))
         assertEquals("I", roman(1))
         assertEquals("MMM", roman(3000))
         assertEquals("MCMLXXVIII", roman(1978))
         assertEquals("DCXCIV", roman(694))
         assertEquals("XLIX", roman(49))
+
     }
 
     @Test

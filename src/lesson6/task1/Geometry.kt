@@ -295,18 +295,33 @@ fun minContainingCircle(vararg points: Point): Circle {
     list.remove(firstPair.end)
     val secondPair = diameter(*list.toTypedArray())
     val crPoint = lineBySegment(firstPair).crossPoint(lineBySegment(secondPair))
-    var ans = mutableListOf(firstPair.begin, firstPair.end, secondPair.begin, secondPair.end)
+    var ansPoints = mutableListOf(firstPair.begin, firstPair.end, secondPair.begin, secondPair.end)
     var minDist = -1.0
     var currentDist: Double
-    var extraPoint = ans[0]
-    for(i in 0 until ans.size){
-        currentDist = ans[i].distance(crPoint)
+    var extraPoint = ansPoints[0]
+    for(i in 0 until ansPoints.size){
+        currentDist = ansPoints[i].distance(crPoint)
         if(currentDist < minDist || minDist == -1.0){
             minDist = currentDist
-            extraPoint = ans[i]
+            extraPoint = ansPoints[i]
         }
     }
-    ans.remove(extraPoint)
-    return circleByThreePoints(ans[0], ans[1], ans[2])
+    ansPoints.remove(extraPoint)
+    val ansTriangle = circleByThreePoints(ansPoints[0], ansPoints[1], ansPoints[2])
+    var ansDiameter: Circle
+    if(firstPair.begin in ansPoints && firstPair.end in ansPoints){
+        ansDiameter = circleByDiameter(firstPair)
+    }
+    else ansDiameter = circleByDiameter(secondPair)
+    var flagDiameter = true
+    var ind = 0
+    while(ind < points.size && flagDiameter){
+        flagDiameter = ansDiameter.contains(points[ind])
+        ind++
+    }
+    if(ansDiameter.radius < ansTriangle.radius && flagDiameter){
+        return ansDiameter
+    }
+    else return ansTriangle
 }
 
