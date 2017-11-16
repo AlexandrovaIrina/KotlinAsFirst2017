@@ -308,17 +308,13 @@ fun minContainingCircle(vararg points: Point): Circle {
     }
     ansPoints.remove(extraPoint)
     val ansTriangle = circleByThreePoints(ansPoints[0], ansPoints[1], ansPoints[2])
-    var ansDiameter: Circle
-    if(firstPair.begin in ansPoints && firstPair.end in ansPoints){
-        ansDiameter = circleByDiameter(firstPair)
-    }
-    else ansDiameter = circleByDiameter(secondPair)
+    var ansDiameter = circleByDiameter(firstPair)
     var flagTriangle = true
     var flagDiameter = true
     var ind = 0
     while(ind < points.size && (flagDiameter || flagTriangle)){
-        flagDiameter = ansDiameter.contains(points[ind])
-        flagTriangle = ansTriangle.contains(points[ind])
+        if(flagDiameter) flagDiameter = ansDiameter.contains(points[ind])
+        if(flagTriangle) flagTriangle = ansTriangle.contains(points[ind])
         ind++
     }
     if(ansDiameter.radius < ansTriangle.radius && flagDiameter || !flagTriangle){
