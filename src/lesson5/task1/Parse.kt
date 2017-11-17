@@ -301,11 +301,11 @@ fun romanToInt(roman: String, ind: Int): Int {
 fun correctNumber(romanNumber: Char): Boolean = romanNumber in romanNumbers
 fun fromRoman(roman: String): Int {
     var currentNumber: Int
-    if (roman.isEmpty() || correctNumber(roman[0])) return -1
+    if (roman.isEmpty() || !correctNumber(roman[0])) return -1
     var lastNumber = romanToInt(roman, 0)
     var ans = lastNumber
     for (i in 1 until roman.length) {
-        if (correctNumber(roman[i])) return -1
+        if (!correctNumber(roman[i])) return -1
         currentNumber = romanToInt(roman, i)
         if (lastNumber < currentNumber) ans += currentNumber - 2 * lastNumber
         else ans += currentNumber
