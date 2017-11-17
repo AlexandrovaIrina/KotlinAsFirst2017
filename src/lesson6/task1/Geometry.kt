@@ -277,16 +277,25 @@ fun minContainingCircle(vararg points: Point): Circle {
     }
     val ansPoints = diameter(*points)
     var ans = circleByDiameter(ansPoints)
-    var farthestPoint = points[0]
-    var maxDistance = farthestPoint.distance(ans.center)
-    for(i in 1 until points.size){
-        val currentDistance = points[i].distance(ans.center)
-        if(currentDistance > maxDistance) {
-            maxDistance = currentDistance
-            farthestPoint = points[i]
-        }
+    var flag = true
+    var ind = 0
+    while (flag && ind < points.size) {
+        flag = ans.contains(points[ind])
+        ind++
     }
-    ans = circleByThreePoints(ansPoints.begin, ansPoints.end, farthestPoint)
+    if (!flag) {
+        var farthestPoint = points[0]
+        var maxDistance = farthestPoint.distance(ans.center)
+        for (i in 1 until points.size) {
+            val currentDistance = points[i].distance(ans.center)
+            if (currentDistance > maxDistance) {
+                maxDistance = currentDistance
+                farthestPoint = points[i]
+            }
+        }
+
+        ans = circleByThreePoints(ansPoints.begin, ansPoints.end, farthestPoint)
+    }
     return ans
 }
 
