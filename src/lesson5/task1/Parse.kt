@@ -71,23 +71,25 @@ val months = listOf("января", "февраля", "марта", "апрел�
         "июля", "августа", "сентября", "октября", "ноября", "декабря")
 val months31 = listOf(0, 2, 4, 6, 7, 9, 11)
 val months30 = listOf(3, 5, 8, 10)
-fun correctDate (parts: List<String>):Boolean {
-    var rightFormat = parts[0].toInt() < 31 && months.indexOf(parts[1]) in months30
-    if (!rightFormat) rightFormat = parts[0].toInt() < 32 && months.indexOf(parts[1]) in months31
-    if (!rightFormat) rightFormat = parts[0].toInt() < 29 && months.indexOf(parts[1]) == 1
+fun correctDate(parts: List<String>): Boolean {
+    if (parts[1] !in months) return false
     var leapYear = parts[2].toInt() % 4 == 0 && parts[2].toInt() % 100 != 0 || parts[2].toInt() % 400 == 0
-    if (!rightFormat && leapYear) rightFormat = parts[0].toInt() == 29 && months.indexOf(parts[1]) == 1
-    return rightFormat
+    return when {
+        months.indexOf(parts[1]) in months31 && parts[0].toInt() < 32 -> true
+        months.indexOf(parts[1]) == 1 && parts[0].toInt() < 29 -> true
+        months.indexOf(parts[1]) in months30 && parts[0].toInt() < 31 -> true
+        parts[0].toInt() == 29 && months.indexOf(parts[1]) == 1 && leapYear -> true
+        else -> false
+    }
 }
+
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
     if (parts.size != 3) return ""
     try {
         var ansDay = parts[0].toInt()
-        if (parts[1] !in months) return ""
-        var ansMonth: Int
         if (!correctDate(parts)) return ""
-        else ansMonth = months.indexOf(parts[1]) + 1
+        var ansMonth = months.indexOf(parts[1]) + 1
         var ansYear = parts[2].toInt()
         return String.format("%02d.%02d.%d", ansDay, ansMonth, ansYear)
     } catch (e: NumberFormatException) {
@@ -133,12 +135,12 @@ fun dateDigitToStr(digital: String): String {
 fun flattenPhoneNumber(phone: String): String {
     val legalChar = listOf('(', ')', '-', '+', ' ')
     var ans = StringBuilder()
+    if (phone[0] == '+') ans.append(phone[0])
     for (i in 0 until phone.length) {
-        if (phone[i] !in legalChar && phone[i].toInt() !in 48..58) {
+        if (phone[i] !in legalChar && phone[i].toInt() !in '0'.toInt()..'9'.toInt()) {
             return ""
         } else {
-            if (phone[i].toInt() in 48..58) ans.append(phone[i])
-            if (phone[i] == '+' && i == 0) ans.append(phone[i])
+            if (phone[i].toInt() in '0'.toInt()..'9'.toInt()) ans.append(phone[i])
         }
     }
     return ans.toString()
@@ -184,10 +186,9 @@ fun bestHighJump(jumps: String): Int {
         var ans = -1
         if (parts.size % 2 != 0) return -1
         for (i in 0 until parts.size step 2) {
-            var successfulJump = false
-            for(char in parts[i + 1]){
-                successfulJump = char == '+'
-                if(!successfulJump && !legalChars.contains(char)) return -1
+            val successfulJump = parts[i + 1].indexOf('+', 0) != -1
+            for (char in parts[i + 1]) {
+                if (!legalChars.contains(char)) return -1
             }
             if (successfulJump && ans < parts[i].toInt()) ans = parts[i].toInt()
         }
@@ -209,19 +210,18 @@ fun bestHighJump(jumps: String): Int {
 fun plusMinus(expression: String): Int {
     val parts = expression.split(' ')
     val legalChars = listOf("+", "-")
-    val error = IllegalArgumentException("plusMinus")
     var ans = 0
-    if (parts.size % 2 == 0) throw error
+    if (parts.size % 2 == 0) throw IllegalArgumentException("plusMinus")
     try {
         ans += parts[0].toInt()
         for (i in 1 until parts.size step 2) {
-            if (parts[i] !in legalChars) throw error
+            if (parts[i] !in legalChars) throw IllegalArgumentException("plusMinus")
             if (parts[i] == "+") ans += parts[i + 1].toInt()
             if (parts[i] == "-") ans -= parts[i + 1].toInt()
         }
         return ans
     } catch (e: NumberFormatException) {
-        throw error
+        throw IllegalArgumentException("plusMinus")
     }
 }
 
@@ -298,13 +298,14 @@ fun romanToInt(roman: String, ind: Int): Int {
             pow(10.0, (romanNumbers.indexOf(roman[ind]) / 2).toDouble())).toInt()
 }
 
+fun correctNumber(romanNumber: Char): Boolean = romanNumber in romanNumbers
 fun fromRoman(roman: String): Int {
     var currentNumber: Int
-    if (roman.isEmpty() || roman[0] !in romanNumbers) return -1
+    if (roman.isEmpty() || correctNumber(roman[0])) return -1
     var lastNumber = romanToInt(roman, 0)
     var ans = lastNumber
     for (i in 1 until roman.length) {
-        if (roman[i] !in romanNumbers) return -1
+        if (correctNumber(roman[i])) return -1
         currentNumber = romanToInt(roman, i)
         if (lastNumber < currentNumber) ans += currentNumber - 2 * lastNumber
         else ans += currentNumber
@@ -365,17 +366,15 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var ind = 0
     var iterator = cells / 2
     var amountBrackets = 0
-    val errorState = IllegalStateException("computeDeviceCells")
-    val errorArgument = IllegalArgumentException("computeDeviceCells")
     val legalChars = listOf('+', '-', '>', '<', '[', ']', ' ')
     var step = 0
     for (i in 0 until commands.length) {
-        if (commands[i] !in legalChars) throw errorArgument
-        if (commands[i] == ']' && amountBrackets == 0) throw errorArgument
+        if (commands[i] !in legalChars) throw IllegalArgumentException("computeDeviceCells")
+        if (commands[i] == ']' && amountBrackets == 0) throw IllegalArgumentException("computeDeviceCells")
         if (commands[i] == '[') amountBrackets++
         if (commands[i] == ']') amountBrackets--
     }
-    if (amountBrackets != 0) throw errorArgument
+    if (amountBrackets != 0) throw IllegalArgumentException("computeDeviceCells")
     while (iterator in 0 until cells && ind in 0 until commands.length && step < limit) {
         step++
         when (commands[ind]) {
@@ -387,20 +386,17 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 amountBrackets++
                 if (ans[iterator] == 0) {
                     ind++
-                    val count = amountBrackets - 1
-                    val pair = moveBecauseOfBrackets(commands, ind, count, amountBrackets, 1)
+                    val pair = moveBecauseOfBrackets(commands, ind, amountBrackets - 1, amountBrackets, 1)
                     ind = pair.first - 1
                     amountBrackets = pair.second
                 }
             }
             ']' -> {
-                if (amountBrackets == 0) throw errorArgument
                 amountBrackets--
                 if (ans[iterator] != 0) {
                     amountBrackets--
                     ind--
-                    val count = amountBrackets + 1
-                    val pair = moveBecauseOfBrackets(commands, ind, count, amountBrackets, -1)
+                    val pair = moveBecauseOfBrackets(commands, ind, amountBrackets + 1, amountBrackets, -1)
                     ind = pair.first + 1
                     amountBrackets = pair.second + 1
                 }
@@ -408,7 +404,6 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         }
         ind++
     }
-    if (limit == step) return ans
-    if (iterator !in 0 until cells) throw errorState
+    if (iterator !in 0 until cells) throw IllegalStateException("computeDeviceCells")
     return ans
 }
