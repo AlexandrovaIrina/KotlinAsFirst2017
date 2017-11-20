@@ -73,7 +73,8 @@ val months31 = listOf(0, 2, 4, 6, 7, 9, 11)
 val months30 = listOf(3, 5, 8, 10)
 fun correctDate(parts: List<String>): Boolean {
     if (parts[1] !in months) return false
-    var leapYear = parts[2].toInt() % 4 == 0 && parts[2].toInt() % 100 != 0 || parts[2].toInt() % 400 == 0
+    val year = parts[2].toInt()
+    val leapYear = year % 4 == 0 && year % 100 != 0 || year % 400 == 0
     return when {
         months.indexOf(parts[1]) in months31 && parts[0].toInt() < 32 -> true
         months.indexOf(parts[1]) == 1 && parts[0].toInt() < 29 -> true
@@ -87,10 +88,10 @@ fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
     if (parts.size != 3) return ""
     try {
-        var ansDay = parts[0].toInt()
+        val ansDay = parts[0].toInt()
         if (!correctDate(parts)) return ""
-        var ansMonth = months.indexOf(parts[1]) + 1
-        var ansYear = parts[2].toInt()
+        val ansMonth = months.indexOf(parts[1]) + 1
+        val ansYear = parts[2].toInt()
         return String.format("%02d.%02d.%d", ansDay, ansMonth, ansYear)
     } catch (e: NumberFormatException) {
         return ""
@@ -110,9 +111,10 @@ fun dateDigitToStr(digital: String): String {
     if (parts.size != 3) return ""
     try {
         ans += (parts[0].toInt()).toString()
-        if (parts[1].toInt() in 1..months.size) ans += months[parts[1].toInt() - 1]
-        else return ""
+        val month = parts[1].toInt()
         ans += parts[2]
+        if (month in 1..months.size) ans += months[month - 1]
+        else return ""
         if (!correctDate(ans)) return ""
         return ans.joinToString(separator = " ")
     } catch (e: NumberFormatException) {
@@ -137,11 +139,11 @@ fun flattenPhoneNumber(phone: String): String {
     val legalChar = listOf('(', ')', '-', '+', ' ')
     var ans = StringBuilder()
     if (phone[0] == '+') ans.append(phone[0])
-    for (i in 0 until phone.length) {
-        if (phone[i] !in legalChar && phone[i].toInt() !in '0'.toInt()..'9'.toInt()) {
+    for (char in phone) {
+        if (char !in legalChar && char !in '0'..'9') {
             return ""
         } else {
-            if (phone[i].toInt() in '0'.toInt()..'9'.toInt()) ans.append(phone[i])
+            if (char in '0'..'9') ans.append(char)
         }
     }
     return ans.toString()
@@ -268,9 +270,10 @@ fun mostExpensive(description: String): String {
         for (element in products) {
             val productAndPrice = element.split(' ')
             if (productAndPrice.size != 2) return ""
-            if (productAndPrice[1].toDouble() < 0) return ""
-            if (productAndPrice[1].toDouble() >= maxPrice) {
-                maxPrice = productAndPrice[1].toDouble()
+            val price = productAndPrice[1].toDouble()
+            if (price < 0) return ""
+            if (price >= maxPrice) {
+                maxPrice = price
                 ans = productAndPrice[0]
             }
 

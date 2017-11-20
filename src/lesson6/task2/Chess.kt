@@ -271,7 +271,40 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int = TODO()
+var knightMoves = Graph()
+var vertices = setOf<Square>()
+
+fun buildGraph(lastVertex: Square, currentVertex: Square) {
+    if (!vertices.contains(currentVertex)) {
+        knightMoves.addVertex((currentVertex.notation()))
+    }
+    knightMoves.connect(lastVertex.notation(), currentVertex.notation())
+    var nextVertex = Square(currentVertex.column + 2, currentVertex.row + 1)
+    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
+    nextVertex = Square(currentVertex.column + 2, currentVertex.row - 1)
+    if(nextVertex.inside())    buildGraph(currentVertex, nextVertex)
+    nextVertex = Square(currentVertex.column - 2, currentVertex.row + 1)
+    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
+    nextVertex = Square(currentVertex.column - 2, currentVertex.row - 1)
+    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
+    nextVertex = Square(currentVertex.column + 1, currentVertex.row + 2)
+    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
+    nextVertex = Square(currentVertex.column + 1, currentVertex.row - 2)
+    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
+    nextVertex = Square(currentVertex.column - 1, currentVertex.row + 2)
+    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
+    nextVertex = Square(currentVertex.column - 1, currentVertex.row - 2)
+    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
+    else return
+}
+
+fun knightMoveNumber(start: Square, end: Square): Int {
+    if (!start.inside() || !end.inside()) throw IllegalArgumentException("knightMoveNumber")
+    if (start == end) return 0
+    knightMoves.addVertex("d4")
+    buildGraph(square("d4"), square("e6"))
+    return knightMoves.dfs(start.notation(), end.notation())
+}
 
 /**
  * Очень сложная
