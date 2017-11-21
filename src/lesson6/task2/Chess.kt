@@ -275,36 +275,29 @@ var knightMoves = Graph()
 var vertices = setOf<Square>()
 
 fun buildGraph(lastVertex: Square, currentVertex: Square) {
+    if (!currentVertex.inside()) return
     if (!vertices.contains(currentVertex)) {
         knightMoves.addVertex((currentVertex.notation()))
     }
     knightMoves.connect(lastVertex.notation(), currentVertex.notation())
-    var nextVertex = Square(currentVertex.column + 2, currentVertex.row + 1)
-    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
-    nextVertex = Square(currentVertex.column + 2, currentVertex.row - 1)
-    if(nextVertex.inside())    buildGraph(currentVertex, nextVertex)
-    nextVertex = Square(currentVertex.column - 2, currentVertex.row + 1)
-    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
-    nextVertex = Square(currentVertex.column - 2, currentVertex.row - 1)
-    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
-    nextVertex = Square(currentVertex.column + 1, currentVertex.row + 2)
-    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
-    nextVertex = Square(currentVertex.column + 1, currentVertex.row - 2)
-    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
-    nextVertex = Square(currentVertex.column - 1, currentVertex.row + 2)
-    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
-    nextVertex = Square(currentVertex.column - 1, currentVertex.row - 2)
-    if(nextVertex.inside()) buildGraph(currentVertex, nextVertex)
-    else return
+    buildGraph(currentVertex, Square(currentVertex.row + 1, currentVertex.column + 2))
+    buildGraph(currentVertex, Square(currentVertex.row + 1, currentVertex.column - 2))
+    buildGraph(currentVertex, Square(currentVertex.row - 1, currentVertex.column + 2))
+    buildGraph(currentVertex, Square(currentVertex.row - 1, currentVertex.column - 2))
+    buildGraph(currentVertex, Square(currentVertex.row + 2, currentVertex.column + 1))
+    buildGraph(currentVertex, Square(currentVertex.row + 2, currentVertex.column - 1))
+    buildGraph(currentVertex, Square(currentVertex.row - 2, currentVertex.column + 1))
+    buildGraph(currentVertex, Square(currentVertex.row - 2, currentVertex.column - 1))
 }
 
 fun knightMoveNumber(start: Square, end: Square): Int {
     if (!start.inside() || !end.inside()) throw IllegalArgumentException("knightMoveNumber")
     if (start == end) return 0
-    knightMoves.addVertex("d4")
-    buildGraph(square("d4"), square("e6"))
+    knightMoves.addVertex("a1")
+    buildGraph(square("a1"), square("b3"))
     return knightMoves.dfs(start.notation(), end.notation())
 }
+
 
 /**
  * Очень сложная
