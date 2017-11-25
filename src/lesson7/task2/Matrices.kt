@@ -59,7 +59,33 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+    var ans = createMatrix(height, width, 0)
+    var fromRow = 0
+    var toRow = height
+    var fromColumn = 0
+    var toColumn = width
+    var value = 1
+    while(fromRow < toRow && fromColumn < toColumn){
+        var column = fromColumn
+        var row = fromRow
+        while(column < toColumn) ans[row, column++] = value++
+        column--
+        row++
+        while(column > fromColumn && row < toRow) ans[row++, column] = value++
+        row--
+        column--
+        while(row > fromRow && column >= fromColumn) ans[row, column--] = value++
+        column++
+        row--
+        while(row > fromRow) ans[row--, column] = value++
+        fromRow++
+        toRow--
+        fromColumn++
+        toColumn--
+    }
+    return ans
+}
 
 /**
  * Сложная
@@ -75,7 +101,34 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
-fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateRectangles(height: Int, width: Int): Matrix<Int> {
+    var ans = createMatrix(height, width, 0)
+    var fromRow = 0
+    var toRow = height
+    var fromColumn = 0
+    var toColumn = width
+    var value = 1
+    while(fromRow < toRow && fromColumn < toColumn){
+        var column = fromColumn
+        var row = fromRow
+        while(column < toColumn) ans[row, column++] = value
+        column--
+        row++
+        while(row < toRow) ans[row++, column] = value
+        row--
+        column--
+        while(row > fromRow && column >= fromColumn) ans[row, column--] = value
+        column++
+        row--
+        while(row > fromRow) ans[row--, column] = value
+        fromRow++
+        toRow--
+        fromColumn++
+        toColumn--
+        value++
+    }
+    return ans
+}
 
 /**
  * Сложная
@@ -90,7 +143,25 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
  * 10 13 16 18
  * 14 17 19 20
  */
-fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSnake(height: Int, width: Int): Matrix<Int> {
+    var ans = createMatrix(height, width, 0)
+    var value = 2
+    var fromColumn = 1
+    var toColumn = 0
+    var fromRow = 0
+    var toRow = 1
+    ans[0, 0] = 1
+    while(toRow < height && toColumn < width){
+        var column = fromColumn
+        var row = fromRow
+        while(column >= toColumn) ans[row++, column--] = value++
+        if(fromColumn < width - 1) fromColumn++
+        else fromRow++
+        if(toRow < height - 1)toRow++
+        else toColumn++
+    }
+    return ans
+}
 
 /**
  * Средняя
@@ -103,7 +174,17 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
  * 4 5 6      8 5 2
  * 7 8 9      9 6 3
  */
-fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
+fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
+    if(matrix.height != matrix.width) throw IllegalArgumentException("rotate")
+    val size = matrix.height
+    var ans = createMatrix(size, size, matrix[0, 0])
+    for(i in 0 until size){
+        for(j in 0 until size){
+            ans[j, size - i - 1] = matrix[i, j]
+        }
+    }
+    return ans
+}
 
 /**
  * Сложная
@@ -118,7 +199,7 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+fun isLatinSquare(matrix: Matrix<Int>): Boolean  = TODO()
 
 /**
  * Средняя
@@ -137,7 +218,37 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
  *
  * 42 ===> 0
  */
-fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
+fun sumForSquare(matrix: Matrix<Int>, row: Int, column: Int): Int{
+    var fromRow = 0
+    if(fromRow < row - 1) fromRow = row - 1
+    var fromColumn = 0
+    if(fromColumn < column - 1) fromColumn = column - 1
+    var toRow = matrix.height
+    if(toRow > row + 1) toRow = row + 1
+    var toColumn = matrix.width
+    if(toColumn > column + 1) toColumn = column + 1
+    var sum = 0
+    for(i in fromRow..toRow){
+        for(j in fromColumn..toColumn){
+            if(i != row || j != column){
+                sum += matrix[i, j]
+            }
+        }
+    }
+    return sum
+}
+fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
+    val height = matrix.height
+    val width = matrix.width
+    if(height == width && width == 1) return createMatrix(1, 1, 0)
+    var ans = createMatrix(height, width, 0)
+    for(i in 0 until height){
+        for(j in 0 until width){
+            ans[i, j] = sumForSquare(matrix, i, j)
+        }
+    }
+    return ans
+}
 
 /**
  * Средняя

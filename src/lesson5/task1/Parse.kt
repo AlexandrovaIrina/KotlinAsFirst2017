@@ -140,7 +140,7 @@ fun flattenPhoneNumber(phone: String): String {
     if (phone.isEmpty()) return ""
     val legalChar = listOf('(', ')', '-', '+', ' ')
     var ans = StringBuilder()
-    if (phone[0] == '+') ans.append(phone[0])
+    if (phone[0] == '+' && phone.length != 1) ans.append(phone[0])
     for (char in phone) {
         if (char !in legalChar && char !in '0'..'9') {
             return ""
