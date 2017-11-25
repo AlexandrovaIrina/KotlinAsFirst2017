@@ -46,7 +46,7 @@ fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> {
     val res = MatrixImpl<E>(height, width)
     for (i in 0 until height)
         for (j in 0 until width)
-            res.mat[Cell(i, j)] = e
+            res.set(i, j, e)
     return res
 }
 
@@ -64,7 +64,6 @@ class MatrixImpl<E>(override val height: Int, override val width: Int) : Matrix<
     override fun get(cell: Cell): E = get(cell.row, cell.column)
 
     override fun set(row: Int, column: Int, value: E) {
-        if (mat[Cell(row, column)] == null) throw IllegalArgumentException("set")
         mat[Cell(row, column)] = value
     }
 
@@ -72,16 +71,17 @@ class MatrixImpl<E>(override val height: Int, override val width: Int) : Matrix<
 
 
     override fun equals(other: Any?): Boolean {
-        if (other is MatrixImpl<*> && height == other.height && width == other.width) {
-            for (i in 0 until height) {
-                for (j in 0 until width) {
-                    if (other.mat[Cell(i, j)] != mat[Cell(i, j)]) return false
+        if(other is MatrixImpl<*>
+                && height == other.height && width == other.width){
+            for(i in 0 until height){
+                for(j in 0 until width){
+                    if(mat[Cell(i, j)] != other[Cell(i, j)]) return false
                 }
             }
-        } else return false
-        return true
+            return true
+        }
+        else return false
     }
-
 
     override fun toString(): String {
         val ans = StringBuilder()
