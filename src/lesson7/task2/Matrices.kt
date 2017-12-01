@@ -3,7 +3,7 @@ package lesson7.task2
 
 import lesson7.task1.Matrix
 import lesson7.task1.createMatrix
-
+import java.lang.Math.*
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
 /**
@@ -72,13 +72,13 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
         while(column < toColumn) ans[row, column++] = value++
         column--
         row++
-        while(column > fromColumn && row < toRow) ans[row++, column] = value++
+        while(column >= fromColumn && row < toRow) ans[row++, column] = value++
         row--
         column--
         while(row > fromRow && column >= fromColumn) ans[row, column--] = value++
         column++
         row--
-        while(row > fromRow) ans[row--, column] = value++
+        while(row > fromRow && width != 1) ans[row--, column] = value++
         fromRow++
         toRow--
         fromColumn++
@@ -149,7 +149,12 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> {
     var fromColumn = 1
     var toColumn = 0
     var fromRow = 0
+    if(width == 1){
+        fromColumn = 0
+        fromRow = 1
+    }
     var toRow = 1
+    if(height == 1) toRow = 0
     ans[0, 0] = 1
     while(toRow < height && toColumn < width){
         var column = fromColumn
@@ -219,14 +224,10 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean  = TODO()
  * 42 ===> 0
  */
 fun sumForSquare(matrix: Matrix<Int>, row: Int, column: Int): Int{
-    var fromRow = 0
-    if(fromRow < row - 1) fromRow = row - 1
-    var fromColumn = 0
-    if(fromColumn < column - 1) fromColumn = column - 1
-    var toRow = matrix.height
-    if(toRow > row + 1) toRow = row + 1
-    var toColumn = matrix.width
-    if(toColumn > column + 1) toColumn = column + 1
+    var fromRow = max(0, row - 1)
+    var fromColumn = max(0, column - 1)
+    var toRow = min(matrix.height - 1, row + 1)
+    var toColumn = min(matrix.width - 1, column + 1)
     var sum = 0
     for(i in fromRow..toRow){
         for(j in fromColumn..toColumn){

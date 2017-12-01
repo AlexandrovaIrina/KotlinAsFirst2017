@@ -63,32 +63,25 @@ class MatrixImpl<E>(override val height: Int, override val width: Int) : Matrix<
 
     override fun get(cell: Cell): E = get(cell.row, cell.column)
 
+    override fun equals(other: Any?): Boolean =
+                    other is MatrixImpl<*>
+                    && height == other.height
+                    && width == other.width
+                    && mat == other.mat
+
     override fun set(row: Int, column: Int, value: E) {
         mat[Cell(row, column)] = value
     }
 
+
     override fun set(cell: Cell, value: E) = set(cell.row, cell.column, value)
-
-
-    override fun equals(other: Any?): Boolean {
-        if(other is MatrixImpl<*>
-                && height == other.height && width == other.width){
-            for(i in 0 until height){
-                for(j in 0 until width){
-                    if(mat[Cell(i, j)] != other[Cell(i, j)]) return false
-                }
-            }
-            return true
-        }
-        else return false
-    }
 
     override fun toString(): String {
         val ans = StringBuilder()
         ans.append('[')
-        for (i in 0 until height) {
+        for(i in 0 until height) {
             ans.append("[")
-            for (j in 0 until width) {
+            for(j in 0 until width) {
                 ans.append(mat[Cell(i, j)].toString())
                 ans.append(", ")
             }

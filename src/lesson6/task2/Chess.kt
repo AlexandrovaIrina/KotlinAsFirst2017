@@ -275,10 +275,12 @@ var knightMoves = Graph()
 var vertices = setOf<Square>()
 
 fun buildGraph(lastVertex: Square, currentVertex: Square) {
-    if (!currentVertex.inside()) return
-    if (!vertices.contains(currentVertex)) {
-        knightMoves.addVertex((currentVertex.notation()))
+    if(!currentVertex.inside()) return
+    if(vertices.contains(currentVertex)){
+        knightMoves.connect(lastVertex.notation(), currentVertex.notation())
+        return
     }
+    knightMoves.addVertex((currentVertex.notation()))
     knightMoves.connect(lastVertex.notation(), currentVertex.notation())
     buildGraph(currentVertex, Square(currentVertex.row + 1, currentVertex.column + 2))
     buildGraph(currentVertex, Square(currentVertex.row + 1, currentVertex.column - 2))
