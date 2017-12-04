@@ -78,7 +78,7 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
         while(row > fromRow && column >= fromColumn) ans[row, column--] = value++
         column++
         row--
-        while(row > fromRow && width != 1) ans[row--, column] = value++
+        while(row > fromRow && ans[row, column] != 0) ans[row--, column] = value++
         fromRow++
         toRow--
         fromColumn++
@@ -120,7 +120,7 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
         while(row > fromRow && column >= fromColumn) ans[row, column--] = value
         column++
         row--
-        while(row > fromRow && column != fromColumn) ans[row--, column] = value
+        while(row > fromRow && ans[row, column] == 0) ans[row--, column] = value
         fromRow++
         toRow--
         fromColumn++
