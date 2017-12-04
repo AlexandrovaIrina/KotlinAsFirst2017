@@ -120,7 +120,7 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
         while(row > fromRow && column >= fromColumn) ans[row, column--] = value
         column++
         row--
-        while(row > fromRow) ans[row--, column] = value
+        while(row > fromRow && column != fromColumn) ans[row--, column] = value
         fromRow++
         toRow--
         fromColumn++
@@ -145,17 +145,11 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
  */
 fun generateSnake(height: Int, width: Int): Matrix<Int> {
     var ans = createMatrix(height, width, 0)
-    var value = 2
-    var fromColumn = 1
+    var value = 1
+    var fromColumn = 0
     var toColumn = 0
     var fromRow = 0
-    if(width == 1){
-        fromColumn = 0
-        fromRow = 1
-    }
-    var toRow = 1
-    if(height == 1) toRow = 0
-    ans[0, 0] = 1
+    var toRow = 0
     while(toRow < height && toColumn < width){
         var column = fromColumn
         var row = fromRow

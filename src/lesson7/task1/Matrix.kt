@@ -63,11 +63,8 @@ class MatrixImpl<E>(override val height: Int, override val width: Int) : Matrix<
 
     override fun get(cell: Cell): E = get(cell.row, cell.column)
 
-    override fun equals(other: Any?): Boolean =
-                    other is MatrixImpl<*>
-                    && height == other.height
-                    && width == other.width
-                    && mat == other.mat
+    override fun equals(other: Any?): Boolean = other is MatrixImpl<*> && height == other.height &&
+            width == other.width && mat == other.mat
 
     override fun set(row: Int, column: Int, value: E) {
         mat[Cell(row, column)] = value
