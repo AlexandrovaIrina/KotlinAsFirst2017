@@ -260,7 +260,30 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
  * 0 0 1 0
  * 0 0 0 0
  */
-fun findHoles(matrix: Matrix<Int>): Holes = TODO()
+fun findHoles(matrix: Matrix<Int>): Holes {
+    val height = matrix.height
+    val width = matrix.width
+    var visited = mutableSetOf<Int>()
+    var row = 0
+    var ansRows = mutableSetOf<Int>()
+    var ansColumns = mutableSetOf<Int>()
+    while(row < height){
+        ansRows.add(row)
+        var column = 0
+        while(column < width){
+            if(column !in visited) ansColumns.add(column)
+            if(matrix[row, column] != 0){
+                ansColumns.remove(column)
+                ansRows.remove(row)
+                visited.add(column)
+                column = width
+            }
+            column++
+        }
+        row++
+    }
+    return Holes(ansRows.toList(), ansColumns.toList())
+}
 
 /**
  * Класс для описания местонахождения "дырок" в матрице
@@ -281,7 +304,25 @@ data class Holes(val rows: List<Int>, val columns: List<Int>)
  *
  * К примеру, центральный элемент 12 = 1 + 2 + 4 + 5, элемент в левом нижнем углу 12 = 1 + 4 + 7 и так далее.
  */
-fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> = TODO()
+fun sumOfSubMatrix(ansMatrix: Matrix<Int>, row: Int, column: Int): Int {
+    val fromRow = max(row - 1, 0)
+    val fromColumn = max(column - 1, 0)
+    var ans = ansMatrix[fromRow, column]
+    ans += ansMatrix[row, fromColumn]
+    if(fromRow != row && column != fromColumn) ans -= ansMatrix[fromRow, fromColumn]
+    return ans
+}
+fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> {
+    val height = matrix.height
+    val width = matrix.width
+    var ans = createMatrix(height, width, 0)
+    for(i in 0 until height){
+        for(j in 0 until width){
+            ans[i, j] = sumOfSubMatrix(ans, i, j) + matrix[i, j]
+        }
+    }
+    return ans
+}
 
 /**
  * Сложная
