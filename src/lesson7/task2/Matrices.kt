@@ -276,7 +276,6 @@ fun findHoles(matrix: Matrix<Int>): Holes {
                 ansColumns.remove(column)
                 ansRows.remove(row)
                 visited.add(column)
-                column = width
             }
             column++
         }
