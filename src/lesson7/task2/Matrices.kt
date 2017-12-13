@@ -66,19 +66,19 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
     var fromColumn = 0
     var toColumn = width
     var value = 1
-    while(fromRow < toRow && fromColumn < toColumn){
+    while (fromRow < toRow && fromColumn < toColumn) {
         var column = fromColumn
         var row = fromRow
-        while(column < toColumn) ans[row, column++] = value++
+        while (column < toColumn) ans[row, column++] = value++
         column--
         row++
-        while(column >= fromColumn && row < toRow) ans[row++, column] = value++
+        while (column >= fromColumn && row < toRow) ans[row++, column] = value++
         row--
         column--
-        while(row > fromRow && column >= fromColumn) ans[row, column--] = value++
+        while (row > fromRow && column >= fromColumn) ans[row, column--] = value++
         column++
         row--
-        while(row > fromRow && ans[row, column] == 0) ans[row--, column] = value++
+        while (row > fromRow && ans[row, column] == 0) ans[row--, column] = value++
         fromRow++
         toRow--
         fromColumn++
@@ -108,19 +108,19 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
     var fromColumn = 0
     var toColumn = width
     var value = 1
-    while(fromRow < toRow && fromColumn < toColumn){
+    while (fromRow < toRow && fromColumn < toColumn) {
         var column = fromColumn
         var row = fromRow
-        while(column < toColumn) ans[row, column++] = value
+        while (column < toColumn) ans[row, column++] = value
         column--
         row++
-        while(row < toRow) ans[row++, column] = value
+        while (row < toRow) ans[row++, column] = value
         row--
         column--
-        while(row > fromRow && column >= fromColumn) ans[row, column--] = value
+        while (row > fromRow && column >= fromColumn) ans[row, column--] = value
         column++
         row--
-        while(row > fromRow && ans[row, column] == 0) ans[row--, column] = value
+        while (row > fromRow && ans[row, column] == 0) ans[row--, column] = value
         fromRow++
         toRow--
         fromColumn++
@@ -150,13 +150,13 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> {
     var toColumn = 0
     var fromRow = 0
     var toRow = 0
-    while(toRow < height && toColumn < width){
+    while (toRow < height && toColumn < width) {
         var column = fromColumn
         var row = fromRow
-        while(column >= toColumn) ans[row++, column--] = value++
-        if(fromColumn < width - 1) fromColumn++
+        while (column >= toColumn) ans[row++, column--] = value++
+        if (fromColumn < width - 1) fromColumn++
         else fromRow++
-        if(toRow < height - 1)toRow++
+        if (toRow < height - 1) toRow++
         else toColumn++
     }
     return ans
@@ -174,11 +174,11 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> {
  * 7 8 9      9 6 3
  */
 fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
-    if(matrix.height != matrix.width) throw IllegalArgumentException("rotate")
+    if (matrix.height != matrix.width) throw IllegalArgumentException("rotate")
     val size = matrix.height
     var ans = createMatrix(size, size, matrix[0, 0])
-    for(i in 0 until size){
-        for(j in 0 until size){
+    for (i in 0 until size) {
+        for (j in 0 until size) {
             ans[j, size - i - 1] = matrix[i, j]
         }
     }
@@ -198,7 +198,7 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean  = TODO()
+fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
 
 /**
  * Средняя
@@ -217,28 +217,29 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean  = TODO()
  *
  * 42 ===> 0
  */
-fun sumForSquare(matrix: Matrix<Int>, row: Int, column: Int): Int{
+fun sumForSquare(matrix: Matrix<Int>, row: Int, column: Int): Int {
     var fromRow = max(0, row - 1)
     var fromColumn = max(0, column - 1)
     var toRow = min(matrix.height - 1, row + 1)
     var toColumn = min(matrix.width - 1, column + 1)
     var sum = 0
-    for(i in fromRow..toRow){
-        for(j in fromColumn..toColumn){
-            if(i != row || j != column){
+    for (i in fromRow..toRow) {
+        for (j in fromColumn..toColumn) {
+            if (i != row || j != column) {
                 sum += matrix[i, j]
             }
         }
     }
     return sum
 }
+
 fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
     val height = matrix.height
     val width = matrix.width
-    if(height == width && width == 1) return createMatrix(1, 1, 0)
+    if (height == width && width == 1) return createMatrix(1, 1, 0)
     var ans = createMatrix(height, width, 0)
-    for(i in 0 until height){
-        for(j in 0 until width){
+    for (i in 0 until height) {
+        for (j in 0 until width) {
             ans[i, j] = sumForSquare(matrix, i, j)
         }
     }
@@ -267,12 +268,12 @@ fun findHoles(matrix: Matrix<Int>): Holes {
     var row = 0
     var ansRows = mutableSetOf<Int>()
     var ansColumns = mutableSetOf<Int>()
-    while(row < height){
+    while (row < height) {
         ansRows.add(row)
         var column = 0
-        while(column < width){
-            if(column !in visited) ansColumns.add(column)
-            if(matrix[row, column] != 0){
+        while (column < width) {
+            if (column !in visited) ansColumns.add(column)
+            if (matrix[row, column] != 0) {
                 ansColumns.remove(column)
                 ansRows.remove(row)
                 visited.add(column)
@@ -308,15 +309,16 @@ fun sumOfSubMatrix(ansMatrix: Matrix<Int>, row: Int, column: Int): Int {
     val fromColumn = max(column - 1, 0)
     var ans = ansMatrix[fromRow, column]
     ans += ansMatrix[row, fromColumn]
-    if(fromRow != row && column != fromColumn) ans -= ansMatrix[fromRow, fromColumn]
+    if (fromRow != row && column != fromColumn) ans -= ansMatrix[fromRow, fromColumn]
     return ans
 }
+
 fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> {
     val height = matrix.height
     val width = matrix.width
     var ans = createMatrix(height, width, 0)
-    for(i in 0 until height){
-        for(j in 0 until width){
+    for (i in 0 until height) {
+        for (j in 0 until width) {
             ans[i, j] = sumOfSubMatrix(ans, i, j) + matrix[i, j]
         }
     }
@@ -351,7 +353,17 @@ fun canOpenLock(key: Matrix<Int>, lock: Matrix<Int>): Triple<Boolean, Int, Int> 
  * Инвертировать заданную матрицу.
  * При инвертировании знак каждого элемента матрицы следует заменить на обратный
  */
-operator fun Matrix<Int>.unaryMinus(): Matrix<Int> = TODO(this.toString())
+operator fun Matrix<Int>.unaryMinus(): Matrix<Int> {
+    val height = this.height
+    val width = this.width
+    var ans = createMatrix(height, width, 0)
+    for (i in 0 until height) {
+        for (j in 0 until width) {
+            ans[i, j] = -this[i, j]
+        }
+    }
+    return ans
+}
 
 /**
  * Средняя
@@ -361,7 +373,24 @@ operator fun Matrix<Int>.unaryMinus(): Matrix<Int> = TODO(this.toString())
  * В противном случае бросить IllegalArgumentException.
  * Подробно про порядок умножения см. статью Википедии "Умножение матриц".
  */
-operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> = TODO(this.toString())
+fun calculate(thisMatrix: Matrix<Int>, otherMatrix: Matrix<Int>, row: Int, column: Int): Int {
+    var ans = 0
+    for (i in 0 until thisMatrix.width) {
+        ans += thisMatrix[row, i] * otherMatrix[i, column]
+    }
+    return ans
+}
+
+operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> {
+    if (this.width != other.height) throw IllegalArgumentException("times")
+    var ans = createMatrix(this.height, other.width, 0)
+    for (i in 0 until this.height) {
+        for (j in 0 until other.width) {
+            ans[i, j] = calculate(this, other, i, j)
+        }
+    }
+    return ans
+}
 
 /**
  * Сложная
@@ -390,7 +419,40 @@ operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> = TODO(this.toSt
  * 0  4 13  6
  * 3 10 11  8
  */
-fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> = TODO()
+fun findNumber(matrix: Matrix<Int>, row: Int, column: Int, number: Int): Pair<Int, Int> {
+    val minRow = max(0, row - 1)
+    val maxRow = min(matrix.height - 1, row + 1)
+    val minColumn = max(0, column - 1)
+    val maxColumn = min(matrix.width - 1, column + 1)
+    if (matrix[minRow, column] == number) return Pair(minRow, column)
+    if (matrix[row, maxColumn] == number) return Pair(row, maxColumn)
+    if (matrix[row, minColumn] == number) return Pair(row, minColumn)
+    if (matrix[maxRow, column] == number) return Pair(maxRow, column)
+    throw IllegalStateException("fifteenGameMoves")
+}
+
+fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
+    var ans = matrix
+    var zeroRow = 0
+    var zeroColumn = 0
+    while (zeroRow < matrix.width) {
+        zeroColumn = 0
+        while (zeroColumn < matrix.height) {
+            if (matrix[zeroRow, zeroColumn] == 0) break
+            zeroColumn++
+        }
+        if (zeroColumn != matrix.width && matrix[zeroRow, zeroColumn] == 0) break
+        zeroRow++
+    }
+    for (move in moves) {
+        val nextPos = findNumber(ans, zeroRow, zeroColumn, move)
+        ans[nextPos.first, nextPos.second] = 0
+        ans[zeroRow, zeroColumn] = move
+        zeroRow = nextPos.first
+        zeroColumn = nextPos.second
+    }
+    return ans
+}
 
 /**
  * Очень сложная
