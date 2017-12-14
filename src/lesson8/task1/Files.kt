@@ -1,7 +1,9 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson8.task1
 
+import lesson6.task1.lineByPoints
 import java.io.File
+import java.lang.Math.*
 
 /**
  * Пример
@@ -53,7 +55,26 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    var ans = mutableMapOf<String, Int>()
+    for(string in substrings){
+        ans.put(string, 0)
+    }
+    for(line in File(inputName).readLines()){
+        for(string in substrings){
+            val str = string.toLowerCase()
+            for(i in 0..line.length - str.length) {
+                val subLine = line.substring(i, i + str.length).toLowerCase()
+                if (subLine.contains(str)) {
+                    var count = ans[string] ?: 0
+                    count++
+                    ans[string] = count
+                }
+            }
+        }
+    }
+    return ans
+}
 
 
 /**
@@ -70,7 +91,37 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val conLetters = listOf('Ж', 'Ч', 'Ш', 'Щ', 'ж', 'ч', 'ш', 'щ')
+    val vowLetters = listOf('Ы', 'ы', 'Я', 'я', 'Ю', 'ю')
+    val outputStream = File(outputName).bufferedWriter()
+    for(line in File(inputName).readLines()){
+        if(line.isEmpty())
+            outputStream.newLine()
+        else{
+            var ansLine = StringBuilder()
+            var ind = 0
+            while(ind < line.length - 1){
+                ansLine.append(line[ind])
+                if(line[ind] in conLetters && line[ind + 1] in vowLetters){
+                    ind++
+                    when(line[ind]){
+                        'Ы' -> ansLine.append('И')
+                        'ы' -> ansLine.append('и')
+                        'Я' -> ansLine.append('А')
+                        'я' -> ansLine.append('а')
+                        'Ю' -> ansLine.append('У')
+                        'ю' -> ansLine.append('у')
+                    }
+                }
+                ind++
+            }
+            if(ind != line.length)
+                ansLine.append(line[ind])
+            outputStream.write(ansLine.toString())
+            outputStream.newLine()
+        }
+    }
+    outputStream.close()
 }
 
 /**
@@ -90,8 +141,46 @@ fun sibilants(inputName: String, outputName: String) {
  * 4) Число строк в выходном файле должно быть равно числу строк во входном (в т. ч. пустых)
  *
  */
+fun eraseChars(inputName: String): MutableList<String> {
+    var ansList = mutableListOf<String>()
+    for(line in File(inputName).readLines()){
+        if(line.isNotEmpty()){
+            var subLine = StringBuilder(line)
+            while(subLine.first() == ' ') {
+                subLine.deleteCharAt(0)
+            }
+            while(subLine.last() == ' '){
+                subLine.deleteCharAt(subLine.length - 1)
+            }
+            ansList.add(subLine.toString())
+        }
+        else
+            ansList.add("")
+    }
+    return ansList
+}
+fun maxLengthLine(lines: List<String>): Int{
+    var maxLength = 0
+    for(line in lines)
+        maxLength = max(maxLength, line.length)
+    return maxLength
+}
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    var ansList = eraseChars(inputName)
+    val maxLength = maxLengthLine(ansList)
+    for(line in ansList){
+        var ansLine = StringBuilder(line)
+        while(ansLine.length - line.length / 2 < maxLength / 2){
+            ansLine.insert(0, ' ')
+        }
+        if(maxLength % 2 == line.length % 2 && line.length != maxLength){
+            ansLine.insert(0, ' ')
+        }
+        outputStream.write(ansLine.toString())
+        outputStream.newLine()
+    }
+    outputStream.close()
 }
 
 /**
@@ -122,7 +211,38 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    var ansList = eraseChars(inputName)
+    val maxLength = maxLengthLine(ansList)
+    for(line in ansList){
+        if(line.isEmpty()){
+            outputStream.newLine()
+        }
+        else{
+            var ansLine = StringBuilder(line)
+            val parts = line.split(' ')
+            if(parts.size != 1){
+                val length = ansLine.length
+                var ind = 0
+                var count = 0
+                for(i in 0 until maxLength - length){
+                    if(i % (parts.size - 1) == 0) {
+                        count++
+                        ind = 0
+                    }
+                    val part = parts[i % (parts.size - 1)]
+                    ind += part.length
+                    if(ind != 0){
+                        ansLine.insert(ind, ' ')
+                        ind += count + 1
+                    }
+                }
+            }
+            outputStream.write(ansLine.toString())
+            outputStream.newLine()
+        }
+    }
+    outputStream.close()
 }
 
 /**
