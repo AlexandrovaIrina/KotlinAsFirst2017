@@ -61,16 +61,14 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
         ans.put(string, 0)
     }
     for(line in File(inputName).readLines()){
-        for(string in substrings){
+        for(string in ans.keys){
             val str = string.toLowerCase()
-            if(ans[string] == 0){
-                for(i in 0..line.length - str.length) {
-                    val subLine = line.substring(i, i + str.length).toLowerCase()
-                    if (subLine == str) {
-                        var count = ans[string] ?: 0
-                        count++
-                        ans[string] = count
-                    }
+            for(i in 0..line.length - str.length) {
+                val subLine = line.substring(i, i + str.length).toLowerCase()
+                if (subLine == str) {
+                    var count = ans[string] ?: 0
+                    count++
+                    ans[string] = count
                 }
             }
         }
@@ -143,24 +141,6 @@ fun sibilants(inputName: String, outputName: String) {
  * 4) Число строк в выходном файле должно быть равно числу строк во входном (в т. ч. пустых)
  *
  */
-fun eraseChars(inputName: String): MutableList<String> {
-    var ansList = mutableListOf<String>()
-    for(line in File(inputName).readLines()){
-        if(line.isNotEmpty()){
-            var subLine = StringBuilder(line)
-            while(subLine.first() == ' ') {
-                subLine.deleteCharAt(0)
-            }
-            while(subLine.last() == ' '){
-                subLine.deleteCharAt(subLine.length - 1)
-            }
-            ansList.add(subLine.toString())
-        }
-        else
-            ansList.add("")
-    }
-    return ansList
-}
 fun maxLengthLine(lines: List<String>): Int{
     var maxLength = 0
     for(line in lines)
@@ -170,7 +150,10 @@ fun maxLengthLine(lines: List<String>): Int{
 
 fun centerFile(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
-    var ansList = eraseChars(inputName)
+    var ansList = mutableListOf<String>()
+    for(line in File(inputName).readLines()){
+        ansList.add(line.trim())
+    }
     val maxLength = maxLengthLine(ansList)
     for(line in ansList){
         if(line != ""){
@@ -178,7 +161,8 @@ fun centerFile(inputName: String, outputName: String) {
             while(ansLine.length - line.length / 2 < maxLength / 2){
                 ansLine.insert(0, ' ')
             }
-            if(maxLength % 2 == line.length % 2 && maxLength % 2 == 1 && maxLength != line.length){
+            if((maxLength % 2 == line.length % 2 && maxLength % 2 == 1 ||
+                    maxLength % 2 == 0 && maxLength % 2 != line.length % 2) && maxLength != line.length){
                 ansLine.insert(0, ' ')
             }
             outputStream.write(ansLine.toString())
@@ -217,7 +201,10 @@ fun centerFile(inputName: String, outputName: String) {
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
-    var ansList = eraseChars(inputName)
+    var ansList = mutableListOf<String>()
+    for(line in File(inputName).readLines()){
+        ansList.add(line.trim())
+    }
     val maxLength = maxLengthLine(ansList)
     for(line in ansList){
         if(line.isEmpty()){
