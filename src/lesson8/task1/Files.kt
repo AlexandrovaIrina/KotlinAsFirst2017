@@ -156,7 +156,6 @@ fun centerFile(inputName: String, outputName: String) {
     }
     val maxLength = maxLengthLine(ansList)
     for(line in ansList){
-        if(line != ""){
             var ansLine = StringBuilder(line)
             while(ansLine.length - line.length / 2 < maxLength / 2){
                 ansLine.insert(0, ' ')
@@ -165,7 +164,6 @@ fun centerFile(inputName: String, outputName: String) {
                 ansLine.insert(0, ' ')
             }
             outputStream.write(ansLine.toString())
-        }
         outputStream.newLine()
     }
     outputStream.close()
