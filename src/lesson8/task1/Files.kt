@@ -63,12 +63,14 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     for(line in File(inputName).readLines()){
         for(string in substrings){
             val str = string.toLowerCase()
-            for(i in 0..line.length - str.length) {
-                val subLine = line.substring(i, i + str.length).toLowerCase()
-                if (subLine.contains(str)) {
-                    var count = ans[string] ?: 0
-                    count++
-                    ans[string] = count
+            if(ans[string] == 0){
+                for(i in 0..line.length - str.length) {
+                    val subLine = line.substring(i, i + str.length).toLowerCase()
+                    if (subLine == str) {
+                        var count = ans[string] ?: 0
+                        count++
+                        ans[string] = count
+                    }
                 }
             }
         }
@@ -165,19 +167,22 @@ fun maxLengthLine(lines: List<String>): Int{
         maxLength = max(maxLength, line.length)
     return maxLength
 }
+
 fun centerFile(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     var ansList = eraseChars(inputName)
     val maxLength = maxLengthLine(ansList)
     for(line in ansList){
-        var ansLine = StringBuilder(line)
-        while(ansLine.length - line.length / 2 < maxLength / 2){
-            ansLine.insert(0, ' ')
+        if(line != ""){
+            var ansLine = StringBuilder(line)
+            while(ansLine.length - line.length / 2 < maxLength / 2){
+                ansLine.insert(0, ' ')
+            }
+            if(maxLength % 2 == line.length % 2 && maxLength % 2 == 1 && maxLength != line.length){
+                ansLine.insert(0, ' ')
+            }
+            outputStream.write(ansLine.toString())
         }
-        if(maxLength % 2 == line.length % 2 && line.length != maxLength){
-            ansLine.insert(0, ' ')
-        }
-        outputStream.write(ansLine.toString())
         outputStream.newLine()
     }
     outputStream.close()
