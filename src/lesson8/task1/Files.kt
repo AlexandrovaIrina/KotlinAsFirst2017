@@ -161,8 +161,7 @@ fun centerFile(inputName: String, outputName: String) {
             while(ansLine.length - line.length / 2 < maxLength / 2){
                 ansLine.insert(0, ' ')
             }
-            if((maxLength % 2 == line.length % 2 && maxLength % 2 == 1 ||
-                    maxLength % 2 == 0 && maxLength % 2 != line.length % 2) && maxLength != line.length){
+            if(maxLength % 2 == line.length % 2 && maxLength % 2 == 1 && maxLength != line.length){
                 ansLine.insert(0, ' ')
             }
             outputStream.write(ansLine.toString())
