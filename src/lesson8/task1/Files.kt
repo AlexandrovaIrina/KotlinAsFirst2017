@@ -156,14 +156,14 @@ fun centerFile(inputName: String, outputName: String) {
     }
     val maxLength = maxLengthLine(ansList)
     for(line in ansList){
-            var ansLine = StringBuilder(line)
-            while(ansLine.length - line.length / 2 < maxLength / 2){
-                ansLine.insert(0, ' ')
-            }
-            if(maxLength % 2 == line.length % 2 && maxLength % 2 == 1 && maxLength != line.length){
-                ansLine.insert(0, ' ')
-            }
-            outputStream.write(ansLine.toString())
+        var ansLine = StringBuilder(line)
+        while(ansLine.length - line.length / 2 < maxLength / 2){
+            ansLine.insert(0, ' ')
+        }
+        if(maxLength % 2 == line.length % 2 && maxLength % 2 == 1 && maxLength != line.length){
+            ansLine.insert(0, ' ')
+        }
+        outputStream.write(ansLine.toString())
         outputStream.newLine()
     }
     outputStream.close()
@@ -209,11 +209,21 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         }
         else{
             var ansLine = StringBuilder(line)
-            val parts = line.split(' ')
-            if(parts.size != 1){
-                val length = ansLine.length
+            var parts = line.split(' ')
+            if(parts.size > 1){
                 var ind = 0
                 var count = 0
+                var i = 0
+                while(i < parts.size){
+                    if(parts[i] == ""){
+                        ansLine.deleteCharAt(ind)
+                        parts -= parts[i]
+                    }
+                    else ind += parts[i].length
+                    ind++
+                    i++
+                }
+                val length = ansLine.length
                 for(i in 0 until maxLength - length){
                     if(i % (parts.size - 1) == 0) {
                         count++
@@ -221,10 +231,8 @@ fun alignFileByWidth(inputName: String, outputName: String) {
                     }
                     val part = parts[i % (parts.size - 1)]
                     ind += part.length
-                    if(ind != 0){
-                        ansLine.insert(ind, ' ')
-                        ind += count + 1
-                    }
+                    ansLine.insert(ind, ' ')
+                    ind += count + 1
                 }
             }
             outputStream.write(ansLine.toString())
