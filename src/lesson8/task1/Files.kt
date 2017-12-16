@@ -242,7 +242,6 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     }
     outputStream.close()
 }
-
 /**
  * Средняя
  *
@@ -257,8 +256,36 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    var ans = mutableMapOf<String, Int>()
+    for (line in File(inputName).readLines()){
+        val parts = line.split(' ', ',', '.', '!', '?', '—', '0', '1', '2', '3', '4',
+                '5', '6', '7', '8', '9', '\'', '(', ')', ':', ';', '"', '-', '«', '»', '[', ']',
+                '{', '}', '|', '\\', '/', '_', '=', '+', '@', '#', '&', '%', '&', '*', '^', '№')
+        for (part in parts){
+            if (part != ""){
+                val word = part.toLowerCase()
+                if (ans[word] != null){
+                    var count = ans[word] ?: 0
+                    count++
+                    ans[word] = count
+                }
+                else ans.put(word, 1)
+            }
+        }
+    }
+    var list = listOf<Pair<Int, String>>()
+    for(key in ans.keys){
+        val count = ans[key] ?: 0
+        list += Pair(count, key)
+    }
+    list = list.sortedByDescending { it.first }
+    while(list.size > 20){
 
+        list -= list[list.size - 1]
+    }
+    return list.associate{Pair(it.second, it.first)}
+}
 /**
  * Средняя
  *
@@ -288,6 +315,7 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     TODO()
 }
+
 
 /**
  * Средняя
