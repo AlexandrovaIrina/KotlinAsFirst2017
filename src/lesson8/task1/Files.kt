@@ -33,8 +33,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
                 if (word.length + currentLineLength >= lineLength) {
                     outputStream.newLine()
                     currentLineLength = 0
-                }
-                else {
+                } else {
                     outputStream.write(" ")
                     currentLineLength++
                 }
@@ -57,13 +56,13 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     var ans = mutableMapOf<String, Int>()
-    for(string in substrings){
+    for (string in substrings) {
         ans.put(string, 0)
     }
-    for(line in File(inputName).readLines()){
-        for(string in ans.keys){
+    for (line in File(inputName).readLines()) {
+        for (string in ans.keys) {
             val str = string.toLowerCase()
-            for(i in 0..line.length - str.length) {
+            for (i in 0..line.length - str.length) {
                 val subLine = line.substring(i, i + str.length).toLowerCase()
                 if (subLine == str) {
                     var count = ans[string] ?: 0
@@ -94,17 +93,17 @@ fun sibilants(inputName: String, outputName: String) {
     val conLetters = listOf('Ж', 'Ч', 'Ш', 'Щ', 'ж', 'ч', 'ш', 'щ')
     val vowLetters = listOf('Ы', 'ы', 'Я', 'я', 'Ю', 'ю')
     val outputStream = File(outputName).bufferedWriter()
-    for(line in File(inputName).readLines()){
-        if(line.isEmpty())
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty())
             outputStream.newLine()
-        else{
+        else {
             var ansLine = StringBuilder()
             var ind = 0
-            while(ind < line.length - 1){
+            while (ind < line.length - 1) {
                 ansLine.append(line[ind])
-                if(line[ind] in conLetters && line[ind + 1] in vowLetters){
+                if (line[ind] in conLetters && line[ind + 1] in vowLetters) {
                     ind++
-                    when(line[ind]){
+                    when (line[ind]) {
                         'Ы' -> ansLine.append('И')
                         'ы' -> ansLine.append('и')
                         'Я' -> ansLine.append('А')
@@ -115,7 +114,7 @@ fun sibilants(inputName: String, outputName: String) {
                 }
                 ind++
             }
-            if(ind != line.length)
+            if (ind != line.length)
                 ansLine.append(line[ind])
             outputStream.write(ansLine.toString())
             outputStream.newLine()
@@ -141,9 +140,9 @@ fun sibilants(inputName: String, outputName: String) {
  * 4) Число строк в выходном файле должно быть равно числу строк во входном (в т. ч. пустых)
  *
  */
-fun maxLengthLine(lines: List<String>): Int{
+fun maxLengthLine(lines: List<String>): Int {
     var maxLength = 0
-    for(line in lines)
+    for (line in lines)
         maxLength = max(maxLength, line.length)
     return maxLength
 }
@@ -151,16 +150,16 @@ fun maxLengthLine(lines: List<String>): Int{
 fun centerFile(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     var ansList = mutableListOf<String>()
-    for(line in File(inputName).readLines()){
+    for (line in File(inputName).readLines()) {
         ansList.add(line.trim())
     }
     val maxLength = maxLengthLine(ansList)
-    for(line in ansList){
+    for (line in ansList) {
         var ansLine = StringBuilder(line)
-        while(ansLine.length - line.length / 2 < maxLength / 2){
+        while (ansLine.length - line.length / 2 < maxLength / 2) {
             ansLine.insert(0, ' ')
         }
-        if(maxLength % 2 == line.length % 2 && maxLength % 2 == 1 && maxLength != line.length){
+        if (maxLength % 2 == line.length % 2 && maxLength % 2 == 1 && maxLength != line.length) {
             ansLine.insert(0, ' ')
         }
         outputStream.write(ansLine.toString())
@@ -199,33 +198,33 @@ fun centerFile(inputName: String, outputName: String) {
 fun alignFileByWidth(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     var ansList = mutableListOf<String>()
-    for(line in File(inputName).readLines()){
+    for (line in File(inputName).readLines()) {
         ansList.add(line.trim())
     }
     val maxLength = maxLengthLine(ansList)
-    for(line in ansList){
-        if(line.isEmpty()){
+    for (line in ansList) {
+        if (line.isEmpty()) {
             outputStream.newLine()
-        }
-        else{
+        } else {
             var ansLine = StringBuilder(line)
             var parts = line.split(' ')
-            if(parts.size > 1){
+            if (parts.size > 1) {
                 var ind = 0
                 var count = 0
                 var i = 0
-                while(i < parts.size){
-                    if(parts[i] == ""){
+                while (i < parts.size) {
+                    if (parts[i] == "") {
                         ansLine.deleteCharAt(ind)
                         parts -= parts[i]
+                    } else {
+                        ind += parts[i].length
+                        i++
                     }
-                    else ind += parts[i].length
                     ind++
-                    i++
                 }
                 val length = ansLine.length
-                for(i in 0 until maxLength - length){
-                    if(i % (parts.size - 1) == 0) {
+                for (i in 0 until maxLength - length) {
+                    if (i % (parts.size - 1) == 0) {
                         count++
                         ind = 0
                     }
