@@ -264,7 +264,7 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
 fun findHoles(matrix: Matrix<Int>): Holes {
     val height = matrix.height
     val width = matrix.width
-    var visited = mutableSetOf<Int>()
+    var notHolesColumns = mutableSetOf<Int>()
     var row = 0
     var ansRows = mutableSetOf<Int>()
     var ansColumns = mutableSetOf<Int>()
@@ -272,11 +272,11 @@ fun findHoles(matrix: Matrix<Int>): Holes {
         ansRows.add(row)
         var column = 0
         while (column < width) {
-            if (column !in visited) ansColumns.add(column)
+            if (column !in notHolesColumns) ansColumns.add(column)
             if (matrix[row, column] != 0) {
                 ansColumns.remove(column)
                 ansRows.remove(row)
-                visited.add(column)
+                notHolesColumns.add(column)
             }
             column++
         }

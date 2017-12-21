@@ -271,32 +271,45 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-var knightMoves = Graph()
 var vertices = setOf<Square>()
-
-fun buildGraph(lastVertex: Square, currentVertex: Square) {
-    if(!currentVertex.inside()) return
-    if(vertices.contains(currentVertex)){
+fun pushVertex(knightMoves: Graph, lastVertex: Square, currentVertex:Square){
+    if(currentVertex.inside()){
+        knightMoves.addVertex((currentVertex.notation()))
         knightMoves.connect(lastVertex.notation(), currentVertex.notation())
-        return
+        buildGraph(knightMoves, currentVertex)
     }
-    knightMoves.addVertex((currentVertex.notation()))
-    knightMoves.connect(lastVertex.notation(), currentVertex.notation())
-    buildGraph(currentVertex, Square(currentVertex.row + 1, currentVertex.column + 2))
-    buildGraph(currentVertex, Square(currentVertex.row + 1, currentVertex.column - 2))
-    buildGraph(currentVertex, Square(currentVertex.row - 1, currentVertex.column + 2))
-    buildGraph(currentVertex, Square(currentVertex.row - 1, currentVertex.column - 2))
-    buildGraph(currentVertex, Square(currentVertex.row + 2, currentVertex.column + 1))
-    buildGraph(currentVertex, Square(currentVertex.row + 2, currentVertex.column - 1))
-    buildGraph(currentVertex, Square(currentVertex.row - 2, currentVertex.column + 1))
-    buildGraph(currentVertex, Square(currentVertex.row - 2, currentVertex.column - 1))
+    return
+}
+fun buildGraph(knightMoves: Graph, lastVertex: Square) {
+    if(vertices.contains(lastVertex)) return
+    vertices += lastVertex
+    var currentVertex = Square(lastVertex.row + 1, lastVertex.column + 2)
+    pushVertex(knightMoves, lastVertex, currentVertex)
+    currentVertex = Square(lastVertex.row + 1, lastVertex.column - 2)
+    pushVertex(knightMoves, lastVertex, currentVertex)
+    currentVertex = Square(lastVertex.row - 1, lastVertex.column + 2)
+    pushVertex(knightMoves, lastVertex, currentVertex)
+    currentVertex = Square(lastVertex.row - 1, lastVertex.column + 2)
+    pushVertex(knightMoves, lastVertex, currentVertex)
+    currentVertex = Square(lastVertex.row - 1, lastVertex.column - 2)
+    pushVertex(knightMoves, lastVertex, currentVertex)
+    currentVertex = Square(lastVertex.row + 2, lastVertex.column + 1)
+    pushVertex(knightMoves, lastVertex, currentVertex)
+    currentVertex = Square(lastVertex.row + 2, lastVertex.column - 1)
+    pushVertex(knightMoves, lastVertex, currentVertex)
+    currentVertex = Square(lastVertex.row - 2, lastVertex.column + 1)
+    pushVertex(knightMoves, lastVertex, currentVertex)
+    currentVertex = Square(lastVertex.row - 2, lastVertex.column - 1)
+    pushVertex(knightMoves, lastVertex, currentVertex)
+    return
 }
 
 fun knightMoveNumber(start: Square, end: Square): Int {
+    var knightMoves = Graph()
     if (!start.inside() || !end.inside()) throw IllegalArgumentException("knightMoveNumber")
     if (start == end) return 0
     knightMoves.addVertex("a1")
-    buildGraph(square("a1"), square("b3"))
+    buildGraph(knightMoves, square("a1"))
     return knightMoves.dfs(start.notation(), end.notation())
 }
 

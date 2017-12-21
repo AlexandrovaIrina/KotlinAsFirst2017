@@ -33,8 +33,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
                 if (word.length + currentLineLength >= lineLength) {
                     outputStream.newLine()
                     currentLineLength = 0
-                }
-                else {
+                } else {
                     outputStream.write(" ")
                     currentLineLength++
                 }
@@ -57,20 +56,15 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     var ans = mutableMapOf<String, Int>()
-    for(string in substrings){
+    for (string in substrings) {
         ans.put(string, 0)
     }
-    for(line in File(inputName).readLines()){
-        for(string in ans.keys){
+    for (line in File(inputName).readLines()) {
+        for (string in ans.keys) {
             val str = string.toLowerCase()
-            for(i in 0..line.length - str.length) {
-                val subLine = line.substring(i, i + str.length).toLowerCase()
-                if (subLine == str) {
-                    var count = ans[string] ?: 0
-                    count++
-                    ans[string] = count
-                }
-            }
+            var count = ans[str] ?: 0
+            count += Regex(str).findAll(line.toLowerCase()).count()
+            ans[str] = count
         }
     }
     return ans
@@ -94,17 +88,17 @@ fun sibilants(inputName: String, outputName: String) {
     val conLetters = listOf('Ж', 'Ч', 'Ш', 'Щ', 'ж', 'ч', 'ш', 'щ')
     val vowLetters = listOf('Ы', 'ы', 'Я', 'я', 'Ю', 'ю')
     val outputStream = File(outputName).bufferedWriter()
-    for(line in File(inputName).readLines()){
-        if(line.isEmpty())
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty())
             outputStream.newLine()
-        else{
+        else {
             var ansLine = StringBuilder()
             var ind = 0
-            while(ind < line.length - 1){
+            while (ind < line.length - 1) {
                 ansLine.append(line[ind])
-                if(line[ind] in conLetters && line[ind + 1] in vowLetters){
+                if (line[ind] in conLetters && line[ind + 1] in vowLetters) {
                     ind++
-                    when(line[ind]){
+                    when (line[ind]) {
                         'Ы' -> ansLine.append('И')
                         'ы' -> ansLine.append('и')
                         'Я' -> ansLine.append('А')
@@ -115,7 +109,7 @@ fun sibilants(inputName: String, outputName: String) {
                 }
                 ind++
             }
-            if(ind != line.length)
+            if (ind != line.length)
                 ansLine.append(line[ind])
             outputStream.write(ansLine.toString())
             outputStream.newLine()
@@ -141,9 +135,9 @@ fun sibilants(inputName: String, outputName: String) {
  * 4) Число строк в выходном файле должно быть равно числу строк во входном (в т. ч. пустых)
  *
  */
-fun maxLengthLine(lines: List<String>): Int{
+fun maxLengthLine(lines: List<String>): Int {
     var maxLength = 0
-    for(line in lines)
+    for (line in lines)
         maxLength = max(maxLength, line.length)
     return maxLength
 }
@@ -151,16 +145,13 @@ fun maxLengthLine(lines: List<String>): Int{
 fun centerFile(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     var ansList = mutableListOf<String>()
-    for(line in File(inputName).readLines()){
-        ansList.add(line.trim())
-    }
+    File(inputName).readLines().forEach { ansList.add(it.trim()) }
     val maxLength = maxLengthLine(ansList)
-    for(line in ansList){
+    for (line in ansList) {
         var ansLine = StringBuilder(line)
-        while(ansLine.length - line.length / 2 < maxLength / 2){
-            ansLine.insert(0, ' ')
-        }
-        if(maxLength % 2 == line.length % 2 && maxLength % 2 == 1 && maxLength != line.length){
+        val needLength = maxLength / 2 - ansLine.length + line.length / 2
+        ansLine.append(0, needLength - 1, ' ')
+        if (maxLength % 2 == line.length % 2 && maxLength % 2 == 1 && maxLength != line.length) {
             ansLine.insert(0, ' ')
         }
         outputStream.write(ansLine.toString())
@@ -199,34 +190,30 @@ fun centerFile(inputName: String, outputName: String) {
 fun alignFileByWidth(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     var ansList = mutableListOf<String>()
-    for(line in File(inputName).readLines()){
-        ansList.add(line.trim())
-    }
+    File(inputName).readLines().forEach { ansList.add(it.trim()) }
     val maxLength = maxLengthLine(ansList)
-    for(line in ansList){
-        if(line.isEmpty()){
+    for (line in ansList) {
+        if (line.isEmpty()) {
             outputStream.newLine()
-        }
-        else{
+        } else {
             var ansLine = StringBuilder(line)
             var parts = line.split(' ')
-            if(parts.size > 1){
+            if (parts.size > 1) {
                 var ind = 0
                 var count = 0
                 var i = 0
-                while(i < parts.size){
-                    if(parts[i] == ""){
+                while (i < parts.size) {
+                    if (parts[i] == "") {
                         ansLine.deleteCharAt(ind)
                         parts -= parts[i]
-                    }
-                    else{
+                    } else {
                         ind += parts[i].length + 1
                         i++
                     }
                 }
                 val length = ansLine.length
-                for(i in 0 until maxLength - length){
-                    if(i % (parts.size - 1) == 0) {
+                for (i in 0 until maxLength - length) {
+                    if (i % (parts.size - 1) == 0) {
                         count++
                         ind = 0
                     }
@@ -258,34 +245,28 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  */
 fun top20Words(inputName: String): Map<String, Int> {
     var ans = mutableMapOf<String, Int>()
-    for (line in File(inputName).readLines()){
+    for (line in File(inputName).readLines()) {
         val parts = line.split(' ', ',', '.', '!', '?', '—', '0', '1', '2', '3', '4',
                 '5', '6', '7', '8', '9', '\'', '(', ')', ':', ';', '"', '-', '«', '»', '[', ']',
                 '{', '}', '|', '\\', '/', '_', '=', '+', '@', '#', '&', '%', '&', '*', '^', '№')
-        for (part in parts){
-            if (part != ""){
+        for (part in parts) {
+            if (part != "") {
                 val word = part.toLowerCase()
-                if (ans[word] != null){
-                    var count = ans[word] ?: 0
-                    count++
-                    ans[word] = count
-                }
+                var count = ans[word] ?: 0
+                count++
+                if (count != 1) ans[word] = count
                 else ans.put(word, 1)
             }
         }
     }
-    var list = listOf<Pair<Int, String>>()
-    for(key in ans.keys){
-        val count = ans[key] ?: 0
-        list += Pair(count, key)
+    var list = ans.toList()
+    list = list.sortedByDescending { it.second }
+    while (list.size != 20) {
+        list -= list.last()
     }
-    list = list.sortedByDescending { it.first }
-    while(list.size > 20){
-
-        list -= list[list.size - 1]
-    }
-    return list.associate{Pair(it.second, it.first)}
+    return list.associate { Pair(it.first, it.second) }
 }
+
 /**
  * Средняя
  *
@@ -312,9 +293,7 @@ fun top20Words(inputName: String): Map<String, Int> {
  *
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
-fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
-}
+fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {TODO()}
 
 
 /**
