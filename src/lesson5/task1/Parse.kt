@@ -404,3 +404,55 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     if (iterator !in 0 until cells) throw IllegalStateException("computeDeviceCells")
     return ans
 }
+
+
+
+fun correctCoin(coin: String): Boolean {
+    try{
+        val correctNumber = listOf(5000.0, 1000.0, 500.0, 100.0, 50.0, 10.0, 5.0, 2.0, 1.0, 0.5, 0.1, 0.05, 0.01)
+        if(coin.toDouble() !in correctNumber) return false
+        return true
+    }
+    catch(e : NumberFormatException){
+        throw IllegalArgumentException("myFun")
+    }
+}
+
+
+fun myFun(sum: Double, coins: String): List< String > {
+    val parts = coins.split(", ")
+    val ans = mutableMapOf<String, Int>()
+    for(part in parts){
+        ans.put(part, 0)
+    }
+    var number = sum
+    var ind = 0
+    try{
+        while(number > 0){
+            val part = parts[ind]
+            if(!correctCoin(part)) throw IllegalArgumentException("myFun")
+            val currentNumber = part.toDouble()
+            while(number - currentNumber >= 0){
+                var value = ans[part] ?: 0
+                value++
+                ans[part] = value
+                number -= currentNumber
+            }
+            ind++
+        }
+        var answer = mutableListOf<String>()
+        for(part in parts){
+            if(ans[part] != 0){
+                var elem = StringBuilder()
+                elem.append(ans[part].toString())
+                elem.append(" x ")
+                elem.append(part)
+                answer.add(elem.toString())
+            }
+        }
+        return answer
+    }
+    catch(e: NumberFormatException){
+        throw IllegalArgumentException("myFun")
+    }
+}

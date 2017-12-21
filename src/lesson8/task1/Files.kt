@@ -62,9 +62,14 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     for (line in File(inputName).readLines()) {
         for (string in ans.keys) {
             val str = string.toLowerCase()
-            var count = ans[str] ?: 0
-            count += Regex(str).findAll(line.toLowerCase()).count()
-            ans[str] = count
+            for(i in 0..line.length - str.length) {
+                val subLine = line.substring(i, i + str.length).toLowerCase()
+                if (subLine == str) {
+                    var count = ans[string] ?: 0
+                    count++
+                    ans[string] = count
+                }
+            }
         }
     }
     return ans
@@ -149,8 +154,9 @@ fun centerFile(inputName: String, outputName: String) {
     val maxLength = maxLengthLine(ansList)
     for (line in ansList) {
         var ansLine = StringBuilder(line)
-        val needLength = maxLength / 2 - ansLine.length + line.length / 2
-        ansLine.append(0, needLength - 1, ' ')
+        while(ansLine.length - line.length / 2 < maxLength / 2){
+            ansLine.insert(0, ' ')
+        }
         if (maxLength % 2 == line.length % 2 && maxLength % 2 == 1 && maxLength != line.length) {
             ansLine.insert(0, ' ')
         }
@@ -261,9 +267,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     }
     var list = ans.toList()
     list = list.sortedByDescending { it.second }
-    while (list.size != 20) {
-        list -= list.last()
-    }
+    if(list.size > 20) list = list.subList(0, 20)
     return list.associate { Pair(it.first, it.second) }
 }
 
