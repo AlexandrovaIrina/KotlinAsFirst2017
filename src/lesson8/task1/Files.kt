@@ -62,14 +62,9 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     for (line in File(inputName).readLines()) {
         for (string in ans.keys) {
             val str = string.toLowerCase()
-            for(i in 0..line.length - str.length) {
-                val subLine = line.substring(i, i + str.length).toLowerCase()
-                if (subLine == str) {
-                    var count = ans[string] ?: 0
-                    count++
-                    ans[string] = count
-                }
-            }
+            var count = ans[string] ?: 0
+            count += str.toRegex().findAll(line.toLowerCase()).count()
+            ans[string] = count
         }
     }
     return ans
